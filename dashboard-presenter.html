@@ -6,30 +6,31 @@
   <title>Dashboard Presentatore — Live Quiz</title>
   <link rel="icon" href="assets/logo.png" />
   <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2e0a6c6f3.js" crossorigin="anonymous"></script>
 </head>
 
 <body data-theme="violet">
-  <header class="app-header">
-    <div class="header-left">
-      <img src="assets/logo.png" alt="Logo EMS" class="logo" />
-      <div>
-        <h1>Dashboard Presentatore</h1>
-        <p class="brand-sub">Crea · Salva · Lancia Live</p>
-      </div>
+  <!-- Navbar -->
+  <header class="navbar glass sticky">
+    <div class="nav-left">
+      <img src="assets/logo.png" alt="Logo EMS" class="nav-logo" />
+      <span class="nav-title">Dashboard <strong>Presentatore</strong></span>
     </div>
-    <div class="header-right">
-      <button id="logoutPresenter" class="btn ghost">Logout</button>
-    </div>
+    <nav class="nav-right">
+      <button id="themeToggle" class="icon-btn"><i class="fas fa-adjust"></i></button>
+      <button id="logoutPresenter" class="btn ghost"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </nav>
   </header>
 
-  <main class="main-wrap">
-
+  <!-- Contenuto principale -->
+  <main class="main-container fade-in">
     <!-- SEZIONE CREAZIONE QUIZ/SONDAGGI -->
-    <section class="card">
-      <h2>Crea Quiz o Sondaggio</h2>
+    <section class="card shadow">
+      <h2><i class="fas fa-edit"></i> Crea Quiz o Sondaggio</h2>
       <p class="muted">Compila i campi per creare un nuovo quiz o sondaggio.</p>
 
-      <div class="form-group">
+      <div class="form-vertical">
         <input id="quizTitle" type="text" placeholder="Titolo quiz o sondaggio" class="input" />
         <textarea id="quizQuestion" placeholder="Domanda principale..." class="input" rows="3"></textarea>
 
@@ -45,46 +46,51 @@
           <p class="muted">Aggiungi risposte:</p>
         </div>
 
-        <button id="addAnswerBtn" class="btn ghost">➕ Aggiungi risposta</button>
+        <button id="addAnswerBtn" class="btn ghost"><i class="fas fa-plus"></i> Aggiungi risposta</button>
 
-        <div class="form-inline" style="margin-top:10px;">
+        <div class="form-inline mt-2">
           <label for="timeLimit">Tempo limite (secondi):</label>
           <input id="timeLimit" type="number" class="input" value="30" min="5" max="300" />
         </div>
 
-        <button id="saveQuizBtn" class="btn primary" style="margin-top:12px;">💾 Salva bozza</button>
+        <button id="saveQuizBtn" class="btn primary mt-3"><i class="fas fa-save"></i> Salva bozza</button>
       </div>
     </section>
 
     <!-- SEZIONE QUIZ SALVATI -->
-    <section class="card">
-      <h2>Contenuti Salvati</h2>
+    <section class="card shadow">
+      <h2><i class="fas fa-archive"></i> Contenuti Salvati</h2>
       <p class="muted">Seleziona un quiz o sondaggio per lanciarlo live.</p>
-      <div id="savedList" class="list-box"></div>
+      <div id="savedList" class="list-box modern-list"></div>
     </section>
 
     <!-- SEZIONE LIVE -->
-    <section class="card">
-      <h2>Quiz Live</h2>
+    <section class="card shadow">
+      <h2><i class="fas fa-broadcast-tower"></i> Quiz Live</h2>
       <p class="muted">Mostra il quiz attivo e monitora le risposte in tempo reale.</p>
-      <div id="liveQuiz" class="live-box">
-        <h3 id="liveTitle">Nessun quiz attivo</h3>
+
+      <div id="liveQuiz" class="live-box glass">
+        <h3 id="liveTitle" class="highlight">Nessun quiz attivo</h3>
         <p id="liveQuestion" class="muted"></p>
-        <canvas id="resultsChart" width="400" height="200"></canvas>
-        <div id="timerDisplay" class="timer-display">⏱️ 0 s</div>
-        <div class="btn-row">
-          <button id="startTimer" class="btn good">Avvia Timer</button>
-          <button id="stopTimer" class="btn danger">Stop</button>
+
+        <canvas id="resultsChart" width="400" height="200" class="chart-canvas"></canvas>
+
+        <div id="timerDisplay" class="timer-display neon">⏱️ 0 s</div>
+
+        <div class="btn-row center mt-2">
+          <button id="startTimer" class="btn good"><i class="fas fa-play"></i> Avvia Timer</button>
+          <button id="stopTimer" class="btn danger"><i class="fas fa-stop"></i> Stop</button>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="footer muted">
+  <!-- Footer -->
+  <footer class="footer glass">
     <p>© 2025 Associazione Elda Marzocchi Scarzella — Live Quiz</p>
   </footer>
 
-  <!-- Script principali -->
+  <!-- Script -->
   <script src="js/firebase.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/app.js"></script>
