@@ -1,4 +1,8 @@
-import { db, addQuiz, getAllQuizzes, updateQuiz } from "./firebase.js";
+// ===============================
+// LIVE QUIZ - PRESENTER SYNC LOGIC
+// ===============================
+import { db, getAllQuizzes, updateQuiz } from "./firebase.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 import { Chart } from "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js";
 
 let quizList = [];
@@ -14,7 +18,7 @@ export async function loadQuizzes() {
 function renderQuizList() {
   const list = document.getElementById("savedList");
   list.innerHTML = quizList.map(q => `
-    <div class="list-item">
+    <div class="list-item card">
       <h4>${q.title}</h4>
       <button class="btn primary" onclick="startQuiz('${q.id}')">🎬 Avvia</button>
     </div>
@@ -24,11 +28,21 @@ function renderQuizList() {
 // Avvia quiz live
 window.startQuiz = async function(id) {
   activeQuiz = quizList.find(q => q.id === id);
-  updateQuiz(id, { status: "live", startedAt: Date.now() });
+  if (!activeQuiz) return;
+
+  // Aggiorna quiz nel DB
+  await updateQuiz(id, { status: "live", startedAt: Date.now(), responses: [] });
+
+  // Imposta quiz live globale
+  await setDoc(doc(db, "status", "liveQuiz"), { activeId: id });
+
+  // Aggiorna UI
   document.getElementById("liveTitle").textContent = activeQuiz.title;
   document.getElementById("liveQuestion").textContent = activeQuiz.question;
   startTimer(activeQuiz.timeLimit);
   setupChart();
+
+  alert("📡 Quiz avviato! I partecipanti sono ora sincronizzati.");
 };
 
 // Timer
@@ -36,22 +50,27 @@ function startTimer(seconds) {
   let remaining = seconds;
   const display = document.getElementById("timerDisplay");
   clearInterval(timerInterval);
+
   timerInterval = setInterval(() => {
-    remaining--;
     display.textContent = `⏱️ ${remaining}s`;
-    if (remaining <= 0) {
+    remaining--;
+    if (remaining < 0) {
       clearInterval(timerInterval);
       stopQuiz();
     }
   }, 1000);
 }
 
-function stopQuiz() {
-  updateQuiz(activeQuiz.id, { status: "finished" });
-  alert("⏰ Quiz terminato!");
-}
+// Ferma quiz
+window.stopQuiz = async function() {
+  if (!activeQuiz) return;
 
-// Chart.js live results
+  await updateQuiz(activeQuiz.id, { status: "finished" });
+  await setDoc(doc(db, "status", "liveQuiz"), { activeId: null });
+  alert("⏰ Quiz terminato!");
+};
+
+// Chart.js setup
 let chart;
 function setupChart() {
   const ctx = document.getElementById("resultsChart");
@@ -60,16 +79,29 @@ function setupChart() {
     data: {
       labels: ["A", "B", "C", "D"],
       datasets: [{
-        label: "Risposte",
+        label: "Risposte ricevute",
         data: [0, 0, 0, 0],
         backgroundColor: ["#7c3aed", "#5b21b6", "#a855f7", "#d8b4fe"]
       }]
-    }
+    },
+    options: { animation: { duration: 300 } }
   });
+
+  // Ascolta risposte live in Firestore
+  listenToResponses();
 }
 
-// Aggiorna risultati
-export function updateResults(optionIndex) {
-  chart.data.datasets[0].data[optionIndex]++;
-  chart.update();
+// Aggiornamento in tempo reale delle risposte
+function listenToResponses() {
+  import("https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js").then(({ onSnapshot, doc }) => {
+    onSnapshot(doc(db, "quiz", activeQuiz.id), (snapshot) => {
+      const data = snapshot.data();
+      if (!data || !data.responses) return;
+
+      const counts = [0, 0, 0, 0];
+      data.responses.forEach(i => counts[i]++);
+      chart.data.datasets[0].data = counts;
+      chart.update();
+    });
+  });
 }
