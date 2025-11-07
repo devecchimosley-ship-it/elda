@@ -1,48 +1,53 @@
-/* ============================================================
-   🔥 Firebase Setup — Live Quiz Elda Marzocchi Scarzella
-   ============================================================ */
+// ==========================
+// FIREBASE CONFIG E SERVIZI
+// ==========================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-// Importa le funzioni principali di Firebase
-// (Solo se usi un bundler o un framework moderno)
-// In caso di semplice HTML statico, questo script funziona con Firebase SDK 9+ caricato via CDN.
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, setDoc, deleteDoc, updateDoc, onSnapshot } 
-  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } 
-  from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-/* ========================
-   CONFIGURAZIONE FIREBASE
-   ======================== */
 const firebaseConfig = {
   apiKey: "AIzaSyCjBRJritJMO_yQu5JzO7yHTkcRyMIn51w",
   authDomain: "eldaquiz-cfc72.firebaseapp.com",
   projectId: "eldaquiz-cfc72",
   storageBucket: "eldaquiz-cfc72.firebasestorage.app",
   messagingSenderId: "805402501775",
-  appId: "1:805402501775:web:19f583ac4db621c40886fa",
-  measurementId: "G-X56EQKLPKG"
+  appId: "1805402501775web19f583ac4db621c40886fa"
 };
 
 // Inizializza Firebase
 const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
+export const auth = getAuth(app);
 
-// Inizializza servizi principali
-const db = getFirestore(app);
-const auth = getAuth(app);
+// ==========================
+// FUNZIONI UTILI
+// ==========================
+export async function addQuiz(data) {
+  const ref = await addDoc(collection(db, "quiz"), data);
+  return ref.id;
+}
 
-/* ========================
-   FUNZIONI GLOBALI
-   ======================== */
+export async function getAllQuizzes() {
+  const snapshot = await getDocs(collection(db, "quiz"));
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
 
-// Esporta per uso in altri file JS
-export { db, auth, collection, addDoc, getDocs, doc, setDoc, deleteDoc, updateDoc, onSnapshot,
-         createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut };
+export async function updateQuiz(id, newData) {
+  await updateDoc(doc(db, "quiz", id), newData);
+}
 
-/* ============================================================
-   💡 NOTE
-   ------------------------------------------------------------
-   - Questo file è caricato in index.html, dashboard-admin.html e dashboard-presenter.html
-   - Assicura che Firestore e Auth siano disponibili globalmente.
-   ============================================================ */
+export async function deleteQuiz(id) {
+  await deleteDoc(doc(db, "quiz", id));
+}
+
+export async function createPresenter(email, password) {
+  await createUserWithEmailAndPassword(auth, email, password);
+}
+
+export async function adminLogin(email, password) {
+  return await signInWithEmailAndPassword(auth, email, password);
+}
+
+export async function logoutUser() {
+  await signOut(auth);
+}
