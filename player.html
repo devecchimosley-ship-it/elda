@@ -1,62 +1,55 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Partecipante — Elda Marzocchi Scarzella</title>
-  <link rel="icon" href="assets/logo.png">
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Live Quiz — Partecipante</title>
+  <link rel="icon" href="assets/logo.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2e0a6c6f3.js" crossorigin="anonymous"></script>
 </head>
 
 <body data-theme="violet">
-  <div class="wrap">
-    <header>
-      <img src="assets/logo.png" alt="Logo" class="logo">
-      <h1>🎮 Modalità Partecipante</h1>
-    </header>
+  <!-- Navbar -->
+  <header class="navbar glass sticky">
+    <div class="nav-left">
+      <img src="assets/logo.png" alt="Logo EMS" class="nav-logo" />
+      <span class="nav-title">Live Quiz — <strong>Partecipante</strong></span>
+    </div>
+    <nav class="nav-right">
+      <button id="themeToggle" class="icon-btn"><i class="fas fa-adjust"></i></button>
+    </nav>
+  </header>
 
-    <main class="card fade show">
-      <p class="brand-sub">Attendi una domanda dal presentatore e rispondi in tempo reale.</p>
+  <!-- Contenuto -->
+  <main class="main-container fade-in" id="playerMain">
+    <section class="card shadow" id="waitingSection">
+      <h2>⏳ In attesa di un quiz live...</h2>
+      <p class="muted">Rimani connesso, il presentatore avvierà il quiz a breve.</p>
+      <div class="loader"></div>
+    </section>
 
-      <div id="currentQuestion" style="margin-top:16px;font-weight:700;"></div>
-      <div id="playerAnswers" style="margin-top:8px;"></div>
-      <div id="playerMsg" class="brand-sub" style="margin-top:10px;"></div>
+    <section class="card shadow hidden" id="quizSection">
+      <h2 id="quizTitle">Titolo Quiz</h2>
+      <p id="quizQuestion" class="muted"></p>
 
-      <button id="backPlayer" class="btn ghost" style="margin-top:14px;">🔙 Torna alla Home</button>
-    </main>
-  </div>
+      <div id="answersContainer" class="answers-grid"></div>
 
-  <script type="module" src="js/app.js"></script>
-  <script type="module" src="js/quiz.js"></script>
-  <script type="module" src="js/chart.js"></script>
-  <script type="module" src="js/ui.js"></script>
-  <script type="module" src="js/sound.js"></script>
+      <p id="timerDisplay" class="timer-display">⏱️ 0 s</p>
+    </section>
 
-  <script>
-  // collegamento "Indietro"
-  document.getElementById("backPlayer").onclick = () => {
-    window.location.href = "index.html";
-  };
+    <section class="card shadow hidden" id="thanksSection">
+      <h2>🎉 Risposta inviata!</h2>
+      <p class="muted">Grazie per aver partecipato al quiz.</p>
+    </section>
+  </main>
 
-  // sincronizza le domande dal presentatore
-  setInterval(() => {
-    const data = localStorage.getItem("currentQuestion");
-    if (!data) return;
-    const { q, answers } = JSON.parse(data);
-    const qBox = document.getElementById("currentQuestion");
-    const aBox = document.getElementById("playerAnswers");
-    qBox.textContent = q;
-    aBox.innerHTML = "";
-    answers.forEach(a => {
-      const div = document.createElement("button");
-      div.className = "btn ghost";
-      div.textContent = a.text;
-      div.onclick = () => {
-        document.getElementById("playerMsg").textContent = "Risposta inviata ✅";
-      };
-      aBox.appendChild(div);
-    });
-  }, 2000);
-  </script>
+  <footer class="footer glass">
+    <p>© 2025 Associazione Elda Marzocchi Scarzella — Live Quiz</p>
+  </footer>
+
+  <script type="module" src="js/player.js"></script>
+  <script src="js/ui.js"></script>
 </body>
 </html>
