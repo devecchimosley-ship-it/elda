@@ -12,64 +12,54 @@
 
   <!-- CSS principale -->
   <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Google Fonts + icone -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2e0a6c6f3.js" crossorigin="anonymous"></script>
 </head>
 
 <body data-theme="violet">
-  <header class="app-header">
-    <div class="header-left">
-      <img src="assets/logo.png" alt="Logo EMS" class="logo" />
-      <div>
-        <h1>Live Quiz — <span class="highlight">Associazione Elda Marzocchi Scarzella</span></h1>
-        <p class="brand-sub">Quiz · Sondaggi · Admin / Presentatore / Partecipante</p>
-      </div>
+  <!-- Navbar -->
+  <header class="navbar glass sticky">
+    <div class="nav-left">
+      <img src="assets/logo.png" alt="Logo EMS" class="nav-logo" />
+      <span class="nav-title">Live Quiz — <strong>Associazione EMS</strong></span>
     </div>
-    <div class="theme-buttons" id="themeButtons"></div>
+    <nav class="nav-right">
+      <button id="themeToggle" class="icon-btn"><i class="fas fa-moon"></i></button>
+    </nav>
   </header>
 
-  <!-- Sezione di benvenuto -->
-  <main class="main-card fade show" id="welcome">
-    <h2 class="welcome-title">🎉 Benvenuti al Live Quiz!</h2>
-    <p class="welcome-sub">Gioca, vota e divertiti insieme a noi ✨</p>
-    <button id="openProfileSelector" class="btn primary">Seleziona profilo</button>
+  <!-- Hero principale -->
+  <main class="hero fade-in">
+    <div class="hero-content">
+      <h1>🎉 Benvenuti al <span class="accent">Live Quiz!</span></h1>
+      <p class="subtitle">Gioca, vota e divertiti insieme a noi ✨</p>
+      <button id="openProfileSelector" class="btn primary pulse">Inizia ora</button>
+    </div>
   </main>
 
-  <!-- Popup Selettore profilo -->
-  <div id="profilePopup" class="popup hidden">
-    <div class="popup-content">
-      <h3>Scegli il tuo profilo</h3>
-      <div class="popup-options">
+  <!-- Popup selezione profilo -->
+  <div id="profilePopup" class="modal hidden">
+    <div class="modal-card slide-up">
+      <button id="closePopup" class="close-btn">&times;</button>
+      <h2>👤 Seleziona il tuo profilo</h2>
+      <div class="profile-options">
         <button id="profileAdmin" class="btn ghost">👑 Admin</button>
         <button id="profilePresenter" class="btn ghost">🎤 Presentatore</button>
         <button id="profilePlayer" class="btn ghost">🎮 Partecipante</button>
       </div>
-      <button id="closePopup" class="btn danger">Chiudi</button>
     </div>
   </div>
 
-  <!-- Script principali -->
-   <!-- ===============================
-       🔗 SCRIPT DEL SITO (modulari)
-       =============================== -->
+  <!-- Footer -->
+  <footer class="footer glass">
+    <p>© 2025 Associazione Elda Marzocchi Scarzella — Tutti i diritti riservati</p>
+  </footer>
 
-  <!-- Inizializza Firebase e il core -->
-  <script type="module" src="js/firebase.js"></script>
-
-  <!-- Gestione accessi, login, ruoli -->
-  <script type="module" src="js/app.js"></script>
-
-  <!-- Gestione quiz e sondaggi -->
-  <script type="module" src="js/quiz.js"></script>
-
-  <!-- Grafico live risultati -->
-  <script type="module" src="js/chart.js"></script>
-
-  <!-- Interfaccia, temi e animazioni -->
-  <script type="module" src="js/ui.js"></script>
-
-  <!-- Suoni e feedback -->
-  <script type="module" src="js/sound.js"></script>
-
+  <!-- Script -->
+  <script src="js/firebase.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>
-
-
