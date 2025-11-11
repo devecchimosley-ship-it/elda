@@ -3,59 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Live Quiz — Partecipante</title>
-  <link rel="icon" href="assets/logo.png" />
-  <link rel="stylesheet" href="css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a2e0a6c6f3.js" crossorigin="anonymous"></script>
+  <title>EMS Kahoot - In gioco</title>
+  <style>
+    body { margin:0; background:#000; color:white; font-family:'Poppins',sans-serif; height:100vh; display:flex; flex-direction:column; }
+    .header { background:#8b5cf6; padding:2rem; text-align:center; font-size:2rem; }
+    .question { flex:1; padding:2rem; text-align:center; font-size:3rem; }
+    .answers { display:grid; grid-template-columns:1fr 1fr; gap:1rem; padding:2rem; }
+    .answer-btn { padding:3rem; font-size:2.5rem; border-radius:20px; cursor:pointer; }
+    .red { background:#ef4444; } .blue { background:#3b82f6; } .yellow { background:#fbbf24; } .green { background:#10b981; }
+  </style>
 </head>
+<body>
+  <div class="header">EMS KAHOOT 2025 - <span id="nick"></span></div>
+  <div class="question" id="question">In attesa...</div>
+  <div class="answers">
+    <div class="answer-btn red" onclick="answer(0)">A</div>
+    <div class="answer-btn blue" onclick="answer(1)">B</div>
+    <div class="answer-btn yellow" onclick="answer(2)">C</div>
+    <div class="answer-btn green" onclick="answer(3)">D</div>
+  </div>
 
-<body data-theme="violet">
-  <!-- Navbar -->
-  <header class="navbar glass sticky">
-    <div class="nav-left">
-      <img src="assets/logo.png" alt="Logo EMS" class="nav-logo" />
-      <span class="nav-title">Live Quiz — <strong>Partecipante</strong></span>
-    </div>
-    <nav class="nav-right">
-      <button id="themeToggle" class="icon-btn"><i class="fas fa-adjust"></i></button>
-    </nav>
-  </header>
-
-  <!-- Contenuto -->
-  <main class="main-container fade-in" id="playerMain">
-    <section class="card shadow" id="waitingSection">
-      <h2>⏳ In attesa di un quiz live...</h2>
-      <p class="muted">Rimani connesso, il presentatore avvierà il quiz a breve.</p>
-      <div class="loader"></div>
-    </section>
-
-    <section class="card shadow hidden" id="quizSection">
-      <h2 id="quizTitle">Titolo Quiz</h2>
-      <p id="quizQuestion" class="muted"></p>
-
-      <div id="answersContainer" class="answers-grid"></div>
-
-      <p id="timerDisplay" class="timer-display">⏱️ 0 s</p>
-    </section>
-
-    <section class="card shadow hidden" id="thanksSection">
-      <h2>🎉 Risposta inviata!</h2>
-      <p class="muted">Grazie per aver partecipato al quiz.</p>
-    </section>
-  </main>
-
-  <footer class="footer glass">
-    <p>© 2025 Associazione Elda Marzocchi Scarzella — Live Quiz</p>
-  </footer>
-
-<!-- Script principali (moduli ES6) -->
-<script type="module" src="js/firebase.js"></script>
-<script type="module" src="js/app.js"></script>
-<script type="module" src="js/quiz.js"></script>
-
-<!-- Script classico (senza import/export) -->
-<script src="js/ui.js"></script>
-
+  <script type="module">
+    // Leggi PIN e nick dall'URL + ascolta quiz attivo
+    // Invia risposta con Firebase
+  </script>
 </body>
 </html>
