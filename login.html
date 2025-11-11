@@ -6,61 +6,15 @@
   <title>Login EMS Kahoot 2025</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
   <style>
-    body { 
-      font-family: 'Poppins', sans-serif; 
-      background: linear-gradient(135deg, #1e1b4b 0%, #4c1d95 50%, #7c3aed 100%);
-      color: white; 
-      height: 100vh; 
-      margin: 0;
-      display: flex; 
-      align-items: center; 
-      justify-content: center;
-      background-size: 400% 400%;
-      animation: gradient 15s ease infinite;
-    }
-    @keyframes gradient { 0%,100% {background-position:0% 50%} 50% {background-position:100% 50%} }
-    .login-box { 
-      background: rgba(255,255,255,0.15); 
-      backdrop-filter: blur(20px); 
-      padding: 3rem; 
-      border-radius: 30px; 
-      box-shadow: 0 25px 60px rgba(0,0,0,0.6); 
-      text-align: center; 
-      max-width: 420px; 
-      width: 90%;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .logo { width: 130px; margin-bottom: 1.5rem; border-radius: 50%; box-shadow: 0 0 30px rgba(139,92,246,0.8); }
-    h1 { font-size: 3rem; margin: 1rem 0; background: linear-gradient(45deg, #c084fc, #e0aaff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    input { 
-      width: 100%; 
-      padding: 1.3rem; 
-      margin: 1rem 0; 
-      border: none; 
-      border-radius: 18px; 
-      font-size: 1.2rem; 
-      background: rgba(255,255,255,0.2); 
-      color: white; 
-      backdrop-filter: blur(10px);
-    }
-    input::placeholder { color: rgba(255,255,255,0.7); }
-    .btn { 
-      width: 100%; 
-      padding: 1.4rem; 
-      background: #8b5cf6; 
-      color: white; 
-      border: none; 
-      border-radius: 18px; 
-      font-size: 1.4rem; 
-      font-weight: bold; 
-      cursor: pointer; 
-      margin-top: 1.5rem;
-      box-shadow: 0 10px 30px rgba(139,92,246,0.5);
-      transition: all 0.3s;
-    }
-    .btn:hover { background: #7c3aed; transform: translateY(-5px); box-shadow: 0 15px 40px rgba(139,92,246,0.7); }
-    .role-btn { background: rgba(255,255,255,0.1); margin: 1rem 0.5rem; padding: 1rem 2rem; border-radius: 15px; }
-    #msg { margin-top: 1.5rem; font-size: 1.1rem; }
+    body { margin:0; font-family:'Poppins',sans-serif; background:linear-gradient(135deg,#1e1b4b,#4c1d95,#7c3aed); color:#fff; height:100vh; display:flex; align-items:center; justify-content:center; }
+    .login-box { background:rgba(255,255,255,0.15); backdrop-filter:blur(20px); padding:3rem; border-radius:30px; max-width:420px; width:90%; box-shadow:0 25px 60px rgba(0,0,0,0.6); text-align:center; }
+    .logo { width:130px; border-radius:50%; margin-bottom:1.5rem; box-shadow:0 0 30px rgba(139,92,246,0.8); }
+    h1 { font-size:3rem; background:linear-gradient(45deg,#c084fc,#e0aaff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    input { width:100%; padding:1.3rem; margin:1rem 0; border:none; border-radius:18px; font-size:1.2rem; background:rgba(255,255,255,0.2); color:white; }
+    .btn { width:100%; padding:1.4rem; background:#8b5cf6; border:none; border-radius:18px; font-size:1.4rem; font-weight:bold; cursor:pointer; margin-top:1.5rem; box-shadow:0 10px 30px rgba(139,92,246,0.5); }
+    .btn:hover { background:#7c3aed; transform:translateY(-5px); }
+    .role-btn { background:rgba(255,255,255,0.1); margin:1rem 0.5rem; padding:1rem 2rem; border-radius:15px; cursor:pointer; }
+    #msg { margin-top:1.5rem; font-size:1.1rem; }
   </style>
 </head>
 <body>
@@ -68,19 +22,16 @@
     <img src="https://eldaquiz-cfc72.web.app/assets/logo.png" class="logo" alt="EMS" />
     <h1>EMS KAHOOT 2025</h1>
     <p>Scegli il tuo ruolo</p>
-    
     <div style="margin:2rem 0;">
       <button class="role-btn" onclick="setRole('admin')">Admin</button>
       <button class="role-btn" onclick="setRole('presenter')">Presentatore</button>
     </div>
-
     <input type="text" id="username" placeholder="Username" />
     <input type="password" id="password" placeholder="Password" />
     <button class="btn" onclick="login()">ACCEDI</button>
     <p id="msg"></p>
-    
     <p style="margin-top:2rem;font-size:0.9rem;opacity:0.8;">
-      Giocatori: entra direttamente da <a href="index.html" style="color:#a78bfa;">emsquiz.it</a>
+      Giocatori: <a href="index.html" style="color:#a78bfa;">emsquiz.it</a>
     </p>
   </div>
 
@@ -99,7 +50,6 @@
     const auth = getAuth(app);
 
     let role = 'admin';
-
     window.setRole = (r) => {
       role = r;
       document.querySelectorAll('.role-btn').forEach(b => b.style.background = 'rgba(255,255,255,0.1)');
@@ -112,39 +62,20 @@
       const password = document.getElementById('password').value;
       const msg = document.getElementById('msg');
 
-      if (!username || !password) {
-        msg.innerHTML = "Compila tutti i campi";
-        return;
-      }
-
-      // Mappa username → email (SENZA ESPORRE EMAIL NEL CODICE)
-      const emailMap = {
-        'admin': 'admin@ems.it',
-        'presenter': 'presenter@ems.it',
-        'presenter2': 'presenter2@ems.it'
-      };
-
+      const emailMap = { 'admin': 'admin@ems.it', 'presenter': 'presenter@ems.it', 'presenter2': 'presenter2@ems.it' };
       const email = emailMap[username];
-      if (!email) {
-        msg.innerHTML = "Username non valido";
-        return;
-      }
+      if (!email) { msg.innerHTML = "Username non valido"; return; }
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        msg.innerHTML = "Accesso riuscito! Redirect...";
-        setTimeout(() => {
-          window.location.href = role + '.html';
-        }, 1000);
+        msg.innerHTML = "Accesso OK! Redirect...";
+        setTimeout(() => window.location.href = role + '.html', 1000);
       } catch (e) {
-        msg.innerHTML = "Password errata o utente non trovato";
+        msg.innerHTML = "Password errata";
       }
     };
 
-    // Tasto INVIO
-    document.addEventListener('keypress', e => {
-      if (e.key === 'Enter') login();
-    });
+    document.addEventListener('keypress', e => { if (e.key === 'Enter') login(); });
   </script>
 </body>
 </html>
