@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EMS Presentatore</title>
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: #1e1b4b; color: white; text-align: center; padding: 2rem; }
+    .pin { font-size: 6rem; background: black; padding: 2rem; border-radius: 30px; margin: 3rem; }
+    .btn { padding: 2rem 6rem; font-size: 3rem; background: #8b5cf6; border: none; border-radius: 30px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Presentatore EMS</h1>
+  <p>Scegli un quiz da lanciare</p>
+  <select id="quizSelect" style="padding:1rem;font-size:2rem;width:80%;border-radius:20px;"></select>
+  <button class="btn" onclick="launch()">LANCIA QUIZ</button>
+  <div class="pin hidden" id="pinDisplay">483920</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getFirestore, collection, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    const app = initializeApp({ /* stessa config */ });
+    const db = getFirestore(app);
+
+    async function loadQuizzes() {
+      const snaps = await getDocs(collection(db, "live_quizzes"));
+      const select = document.getElementById('quizSelect');
+      select.innerHTML = snaps.docs.map(d => {
+        const data = d.data();
+        return `<option value="${d.id}">${data.title}</option>`;
+      }).join('');
+    }
+    loadQuizzes();
+
+    window.launch = async () => {
+      const quizId = document.getElementById('quizSelect').value;
+      const pin = Math.floor(100000 + Math.random()*900000).toString();
+      await setDoc(doc(db, "active", "current"), { quizId, pin, status: "live" });
+      document.getElementById('pinDisplay').textContent = pin;
+      document.getElementById('pinDisplay').classList.remove('hidden');
+    };
+  </script>
+</body>
+</html>
