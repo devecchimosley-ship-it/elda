@@ -3,237 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EMS KAHOOT 2025 — Associazione Elda Marzocchi Scarzella</title>
-  <link rel="icon" href="assets/logo.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a2e0a6c6f3.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>EMS Kahoot 2025 - Gioca Ora!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
   <style>
-    :root { --v:#8b5cf6; --p:#ec4899; --c:#06b6d4; --g:#10b981; --y:#fbbf24; --r:#ef4444;
-            --bg:linear-gradient(135deg,#1e1b4b,#4c1d95,#7c3aed); --glass:rgba(255,255,255,0.15); }
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Poppins',sans-serif;background:var(--bg);color:#fff;height:100vh;overflow:hidden;
-         display:flex;align-items:center;justify-content:center;animation:grad 20s ease infinite;background-size:400%;}
-    @keyframes grad{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-    .container{width:100%;max-width:1300px;padding:2rem;text-align:center;}
-    h1{font-family:'Fredoka One',cursive;font-size:6rem;background:linear-gradient(45deg,#c084fc,#f472b6,#a78bfa);
-       -webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 40px rgba(139,92,246,0.9);}
-    .pin{font-size:6rem;letter-spacing:2rem;background:#000;padding:2rem 4rem;border-radius:40px;margin:3rem;
-         animation:pulse 2s infinite;box-shadow:0 0 50px var(--v);}
-    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-    .btn{padding:2rem 5rem;margin:1.5rem;border:none;border-radius:30px;font-size:2.5rem;font-weight:900;
-         cursor:pointer;box-shadow:0 20px 50px rgba(0,0,0,0.7);transition:all .4s;}
-    .btn:hover{transform:translateY(-15px) scale(1.2);box-shadow:0 0 60px var(--v);}
-    .shape{position:absolute;font-size:12rem;opacity:0.15;animation:float 30s infinite;}
-    .tri{clip-path:polygon(50%0%,0%100%,100%100%);background:var(--p);}
-    .cir{border-radius:50%;background:var(--c);}
-    .squ{background:var(--g);}
-    @keyframes float{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-150px) rotate(180deg)}}
-    .hidden{display:none!important;}
-    .timer{font-size:8rem;font-weight:900;text-shadow:0 0 40px var(--v);animation:bounce 1s infinite;}
-    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-40px)}}
-    canvas{margin:3rem auto;max-width:95%;border-radius:30px;box-shadow:0 0 50px var(--v);}
-    #fireworks{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
-    .player-count{font-size:3rem;margin:2rem;}
-    .logo{max-width:200px;margin:2rem;}
+    body { margin:0; font-family:'Poppins',sans-serif; background:linear-gradient(135deg,#1e1b4b,#4c1d95,#7c3aed); color:#fff; height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; }
+    .box { background:rgba(255,255,255,0.15); backdrop-filter:blur(20px); padding:3rem; border-radius:30px; max-width:500px; width:90%; box-shadow:0 20px 50px rgba(0,0,0,0.5); }
+    h1 { font-family:'Fredoka One',cursive; font-size:4rem; background:linear-gradient(45deg,#c084fc,#f472b6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    input { width:100%; padding:1.5rem; margin:1.5rem 0; border:none; border-radius:20px; font-size:1.5rem; text-align:center; }
+    .btn { padding:2rem 4rem; background:#8b5cf6; border:none; border-radius:25px; color:white; font-size:2rem; cursor:pointer; box-shadow:0 15px 40px rgba(139,92,246,0.6); }
+    .btn:hover { transform:scale(1.1); }
+    .logo { width:150px; border-radius:50%; margin-bottom:1rem; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- HOST -->
-    <div id="host">
-      <img src="https://eldaquiz-cfc72.web.app/assets/logo.png" class="logo" alt="EMS" />
-      <h1>EMS KAHOOT 2025</h1>
-      <p style="font-size:2.5rem;margin:2rem;">Associazione Elda Marzocchi Scarzella</p>
-      <button class="btn" style="background:var(--v);padding:3rem 7rem;" onclick="startGame()">
-        AVVIA SERATA QUIZ
-      </button>
-      <p style="margin-top:3rem;font-size:1.8rem;">
-        Admin: <strong>admin@ems.it</strong> | Pass: <strong>EmsQuiz2025!</strong>
-      </p>
-    </div>
-
-    <!-- LOBBY -->
-    <div id="lobby" class="hidden">
-      <h1>EMS KAHOOT</h1>
-      <div class="pin" id="gamePin">000000</div>
-      <p class="player-count">Giocatori connessi: <span id="playerCount">0</span></p>
-      <p style="font-size:2rem;">Telefono → emsquiz.it</p>
-      <button class="btn" style="background:var(--g);font-size:4rem;padding:3rem 10rem;" onclick="startQuiz()">
-        INIZIA ORA!
-      </button>
-    </div>
-
-    <!-- DOMANDA -->
-    <div id="question" class="hidden">
-      <div class="timer" id="timer">30</div>
-      <h2 id="qText" style="font-size:4rem;margin:3rem;"></h2>
-      <canvas id="resultsChart" height="350"></canvas>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:1000px;margin:3rem auto;">
-        <div class="btn tri" style="height:250px;background:#ef4444"></div>
-        <div class="btn cir" style="height:250px;background:#3b82f6"></div>
-        <div class="btn squ" style="height:250px;background:#fbbf24"></div>
-        <div class="btn" style="height:250px;background:#10b981;border-radius:50%;"></div>
-      </div>
-    </div>
-
-    <!-- PODIO -->
-    <div id="podium" class="hidden">
-      <h1>PODIO FINALE</h1>
-      <div id="podiumList" style="font-size:5rem;line-height:3;"></div>
-      <canvas id="fireworks"></canvas>
-      <button class="btn" style="background:var(--v);margin-top:4rem;" onclick="location.reload()">
-        NUOVA PARTITA
-      </button>
-    </div>
+  <div class="box">
+    <img src="https://eldaquiz-cfc72.web.app/assets/logo.png" class="logo" alt="EMS" />
+    <h1>EMS KAHOOT 2025</h1>
+    <p style="font-size:1.5rem;">Inserisci il PIN del presentatore</p>
+    <input type="text" id="pin" placeholder="483920" maxlength="6" />
+    <input type="text" id="nick" placeholder="Il tuo nome" />
+    <button class="btn" onclick="join()">ENTRA NEL GIOCO!</button>
   </div>
 
-  <!-- SFONDI ANIMATI -->
-  <div class="shape tri" style="top:10%;left:10%;width:250px;height:250px;"></div>
-  <div class="shape cir" style="top:60%;right:10%;width:200px;height:200px;animation-delay:7s;"></div>
-  <div class="shape squ" style="bottom:10%;left:15%;width:220px;height:220px;animation-delay:14s;"></div>
-
-  <!-- MUSICA -->
-  <audio id="music" loop autoplay volume="0.4">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-level-up-2065.mp3" type="audio/mp3">
-  </audio>
-
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-    const app = initializeApp({
-      apiKey: "AIzaSyCjBRJritJMO_yQu5JzO7yHTkcRyMIn51w",
-      authDomain: "eldaquiz-cfc72.firebaseapp.com",
-      projectId: "eldaquiz-cfc72",
-      storageBucket: "eldaquiz-cfc72.firebasestorage.app",
-      messagingSenderId: "805402501775",
-      appId: "1:805402501775:web:19f583ac4db621c40886fa"
-    });
-    const db = getFirestore(app);
-
-    let pin = '', players = {}, qIndex = 0, chart = null;
-    const questions = [
-      {q:"Chi è la fondatrice?",a:["Elda Marzocchi","Maria Rossi","Anna Verdi"],c:0},
-      {q:"Anno fondazione?",a:["1985","1992","2001"],c:1},
-      {q:"Quante socie 2025?",a:["87","112","135"],c:2},
-      {q:"Colore ufficiale?",a:["Blu","Verde","Viola"],c:2},
-      {q:"Prossimo evento?",a:["Cena Natale","Gita montagna","Festa primavera"],c:0}
-      // + 95 domande nel database Firebase
-    ];
-
-    window.startGame = async () => {
-      pin = Math.floor(100000 + Math.random() * 900000).toString();
-      document.getElementById('gamePin').textContent = pin;
-      await setDoc(doc(db, "games", pin), {status:"lobby",players:{},q:0,questions});
-      document.getElementById('host').classList.add('hidden');
-      document.getElementById('lobby').classList.remove('hidden');
-      onSnapshot(doc(db, "games", pin), s => {
-        const d = s.data();
-        if (d?.players) {
-          players = d.players;
-          document.getElementById('playerCount').textContent = Object.keys(players).length;
-        }
-      });
-    };
-
-    window.startQuiz = async () => {
-      await updateDoc(doc(db, "games", pin), {status:"live",q:0});
-      document.getElementById('lobby').classList.add('hidden');
-      document.getElementById('question').classList.remove('hidden');
-      showQuestion(0);
-      startTimer(30);
-    };
-
-    function showQuestion(i) {
-      const q = questions[i];
-      document.getElementById('qText').textContent = q.q;
-      chart = new Chart(document.getElementById('resultsChart'), {
-        type:'bar',
-        data:{labels:q.a, datasets:[{data:q.a.map(()=>0), backgroundColor:['#ef4444','#3b82f6','#fbbf24','#10b981']}]},
-        options:{animation:{duration:1200}, scales:{y:{display:false}}}
-      });
-      onSnapshot(doc(db, "games", pin), s => {
-        const d = s.data();
-        if (d?.responses) {
-          const counts = q.a.map(()=>0);
-          d.responses.forEach(r => counts[r]++);
-          chart.data.datasets[0].data = counts;
-          chart.update();
-        }
-      });
-    }
-
-    function startTimer(s) {
-      let t = s;
-      const el = document.getElementById('timer');
-      const int = setInterval(() => {
-        el.textContent = t;
-        if (--t < 0) { clearInterval(int); nextQuestion(); }
-      }, 1000);
-    }
-
-    async function nextQuestion() {
-      qIndex++;
-      if (qIndex >= questions.length) { showPodium(); }
-      else { await updateDoc(doc(db, "games", pin), {q:qIndex}); showQuestion(qIndex); startTimer(30); }
-    }
-
-    async function showPodium() {
-      document.getElementById('question').classList.add('hidden');
-      document.getElementById('podium').classList.remove('hidden');
-      const sorted = Object.entries(players).sort((a,b)=>b[1].score-a[1].score).slice(0,5);
-      document.getElementById('podiumList').innerHTML = sorted.map((p,i)=>`
-        <div style="font-size:${6-i}rem;">${i+1}° ${p[0]} — ${p[1].score} punti</div>
-      `).join('');
-      fireworks();
-    }
-
-    function fireworks() {
-      const canvas = document.getElementById('fireworks');
-      canvas.width = innerWidth; canvas.height = innerHeight;
-      const ctx = canvas.getContext('2d');
-      let particles = [];
-      function create() {
-        for(let i=0;i<50;i++){
-          particles.push({
-            x:innerWidth/2, y:innerHeight/2,
-            vx:(Math.random()-0.5)*10, vy:(Math.random()-0.5)*10,
-            color:`hsl(${Math.random()*360},100%,50%)`, life:100
-          });
-        }
-      }
-      function draw() {
-        ctx.clearRect(0,0,innerWidth,innerHeight);
-        particles.forEach((p,i)=>{
-          ctx.fillStyle = p.color;
-          ctx.fillRect(p.x,p.y,8,8);
-          p.x += p.vx; p.y += p.vy; p.life--;
-          if(p.life<=0) particles.splice(i,1);
-        });
-        if(Math.random()<0.3) create();
-        requestAnimationFrame(draw);
-      }
-      create(); draw();
-    }
-
-    // PLAYER AUTO-JOIN
     const urlParams = new URLSearchParams(location.search);
-    if (urlParams.has('join') || urlParams.has('play')) {
-      const gamePin = urlParams.get('join') || urlParams.get('play');
-      if (!urlParams.has('n')) {
-        document.body.innerHTML = `<div class="container">
-          <h1>EMS KAHOOT</h1>
-          <input placeholder="Il tuo nickname" id="nick" style="padding:2rem;font-size:3rem;border-radius:30px;margin:3rem;width:80%;">
-          <button class="btn" style="background:var(--v);font-size:3.5rem;" onclick="joinGame('${gamePin}')">ENTRA!</button>
-        </div>`;
-        window.joinGame = async (p) => {
-          const nick = document.getElementById('nick').value || "Giocatore";
-          await updateDoc(doc(db,"games",p),{[`players.${nick}`]:{score:0}});
-          location.href = location.href.split('?')[0] + '?play=' + p + '&n=' + nick;
-        };
-      }
+    if (urlParams.has('join')) {
+      document.getElementById('pin').value = urlParams.get('join');
     }
+
+    window.join = () => {
+      const pin = document.getElementById('pin').value;
+      const nick = document.getElementById('nick').value || "Giocatore";
+      if (pin.length !== 6) return alert("PIN non valido!");
+      location.href = `player.html?pin=${pin}&nick=${encodeURIComponent(nick)}`;
+    };
+
+    document.addEventListener('keypress', e => { if (e.key === 'Enter') join(); });
   </script>
 </body>
 </html>
