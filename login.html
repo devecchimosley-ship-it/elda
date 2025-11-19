@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Presentatore - ELDA MAZZOCCHI SCARZELLA</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+  <script src="js/theme.js" defer></script>
+  <link rel="stylesheet" href="style.css">
+  
+  </head>
+
+<body class="page-center">
+
+  <div class="card" style="max-width: 420px;">
+    <img src="assets/logo.png" class="logo" alt="EMS" />
+    <h1>Presentatore / Creatore</h1>
+    <p>Accedi per creare e lanciare quiz</p>
+
+    <input id="email" type="email" placeholder="Email" class="input-field" />
+    <input id="password" type="password" placeholder="Password" class="input-field" />
+
+    <button class="btn btn-primary" id="loginBtn" style="width:100%;">ACCEDI</button>
+    <button class="btn btn-secondary" id="gotoPlayer" style="width:100%; margin-top: 1rem;">ENTRA COME GIOCATORE</button>
+
+    <p id="msg"></p>
+    <div class="links">
+      <small>Se non hai un account presentatore contatta l'amministratore.</small>
+    </div>
+  </div>
+
+  <script type="module">
+    import { adminLogin } from './js/firebase.js';
+
+    const loginBtn = document.getElementById('loginBtn');
+    const gotoPlayer = document.getElementById('gotoPlayer');
+    const msg = document.getElementById('msg');
+
+    loginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (!email || !password) { msg.textContent = "Compila email e password."; return; }
+
+      if (email === 'admin@ems.it') {
+        msg.textContent = "Accesso admin non consentito. Usa il portale Admin.";
+        return;
+      }
+      
+      try {
+        await adminLogin(email, password);
+        msg.textContent = "Accesso effettuato. Reindirizzamento...";
+        setTimeout(() => window.location.href = 'presenter.html', 700);
+      } catch (e) {
+        console.error(e);
+        msg.textContent = "Credenziali non valide.";
+      }
+    });
+
+    gotoPlayer.addEventListener('click', () => {
+      window.location.href = 'join.html';
+    });
+
+    document.addEventListener('keypress', e => { if (e.key === 'Enter') loginBtn.click(); });
+  </script>
+</body>
+</html>

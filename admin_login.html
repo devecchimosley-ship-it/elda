@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Admin - ELDA MAZZOCCHI SCARZELLA</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <script src="js/theme.js" defer></script>
+  </head>
+
+<body class="page-center">
+
+  <div class="card" style="max-width: 420px;">
+    <img src="assets/logo.png" class="logo" alt="ELDA MAZZOCCHI SCARZELLA" />
+    <h1>Accesso Amministratore</h1>
+    <p>Accesso riservato all'account admin.</p>
+
+    <input id="email" type="email" placeholder="Email" class="input-field" />
+    <input id="password" type="password" placeholder="Password" class="input-field" />
+
+    <button class="btn btn-primary" id="loginBtn" style="width:100%;">ACCEDI</button>
+    <button class="btn btn-secondary" id="goHome" style="width:100%; margin-top: 1rem;">Torna alla Home</button>
+
+    <p id="msg"></p>
+  </div>
+
+  <script type="module">
+    import { adminLogin } from './js/firebase.js';
+
+    const loginBtn = document.getElementById('loginBtn');
+    const msg = document.getElementById('msg');
+
+    loginBtn.addEventListener('click', async () => {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      
+      if (email !== 'admin@ems.it') {
+        msg.textContent = "Solo l'account 'admin@ems.it' può accedere.";
+        return;
+      }
+      if (!password) { 
+        msg.textContent = "Compila la password."; 
+        return; 
+      }
+      
+      try {
+        await adminLogin(email, password);
+        msg.textContent = "Accesso effettuato. Reindirizzamento...";
+        setTimeout(() => window.location.href = 'admin.html', 700);
+      } catch (e) {
+        console.error(e);
+        msg.textContent = "Credenziali non valide.";
+      }
+    });
+
+    document.getElementById('goHome').addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+
+    document.addEventListener('keypress', e => { if (e.key === 'Enter') loginBtn.click(); });
+  </script>
+</body>
+</html>

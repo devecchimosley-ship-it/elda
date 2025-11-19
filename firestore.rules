@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Documento di stato per la NUOVA logica di presentazione
+    match /status/livePresentation {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email.matches('.*@ems\\.it$');
+    }
+
+    // Vecchio documento di stato (ora obsoleto, ma lo lasciamo per sicurezza)
+    match /status/liveQuiz {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email.matches('.*@ems\\.it$');
+    }
+    
+    // NUOVA Collezione "presentations"
+    match /presentations/{presId} {
+      allow read: if true;
+      // Solo gli admin possono creare/aggiornare/eliminare le presentazioni
+      allow create, update, delete: if request.auth != null && request.auth.token.email.matches('.*@ems\\.it$');
+      
+      // Sottocollezione per le risposte (come prima)
+      match /responses/{responseId} {
+        allow read: if request.auth != null && request.auth.token.email.matches('.*@ems\\.it$');
+        // I giocatori possono creare risposte (ma non modificarle)
+        allow create: if request.resource.data.keys().hasAll(['answer','nick','ts', 'slide']);
+      }
+    }
+    
+    // Vecchia collezione "quiz" (ora obsoleta)
+    match /quiz/{quizId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.email.matches('.*@ems\\.it$');
+      match /responses/{playerId} {
+        allow read: if request.auth != null && request.auth.token.email.matches('.*@ems\\.it$');
+        allow create: if true;
+      }
+    }
+  }
+}

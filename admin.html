@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin ELDA MAZZOCCHI SCARZELLA - Editor Presentazioni</title>
+  <script src="js/theme.js" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  
+  </head>
+<body>
+
+  <div class="container">
+
+    <div class="card" id="listSection">
+      <h1>Admin ELDA MAZZOCCHI SCARZELLA - Gestione Presentazioni</h1>
+      <p>Benvenuto <span id="user">admin</span> | <a href="login.html">Logout</a></p>
+      
+      <h3>Crea Nuova Presentazione</h3>
+      <div style="display:flex; gap:1rem;">
+        <input type="text" id="newPresentationTitle" placeholder="Titolo (es. Riunione Q4)" class="form-field" style="margin:0; flex:1;" />
+        <button class="btn btn-green" id="createNewPresentationBtn">Crea</button>
+      </div>
+
+      <hr style="opacity:0.2; margin: 2rem 0;">
+
+      <h3>Presentazioni Esistenti</h3>
+      <div id="presentationList"></div>
+    </div>
+
+    <div class="card hidden" id="editorSection">
+      <button class="btn btn-secondary" id="backToListBtn">← Torna alla lista</button>
+      <h1 id="editorTitle">Editor: ...</h1>
+
+      <h3>Aggiungi Nuova Slide</h3>
+      <div style="background:rgba(0,0,0,0.1); padding:1rem; border-radius:12px;">
+        
+        <select id="slideType" class="form-field" style="margin:0.5rem 0;">
+          <option value="quiz">Domanda (Quiz - Scegli risposta corretta)</option>
+          <option value="poll">Sondaggio (Poll - Nessuna risposta corretta)</option>
+        </select>
+        
+        <textarea id="slideQuestion" rows="3" placeholder="Testo domanda o sondaggio..." class="form-field"></textarea>
+        
+        <div id="answersEditor">
+          <div class="answer-row">
+            <input type="radio" name="correctAnswer" class="correct-radio" value="0" checked>
+            <input type="text" class="answer form-field" placeholder="Risposta 1">
+          </div>
+          <div class="answer-row">
+            <input type="radio" name="correctAnswer" class="correct-radio" value="1">
+            <input type="text" class="answer form-field" placeholder="Risposta 2">
+          </div>
+          <div class="answer-row">
+            <input type="radio" name="correctAnswer" class="correct-radio" value="2">
+            <input type="text" class="answer form-field" placeholder="Risposta 3">
+          </div>
+          <div class="answer-row">
+            <input type="radio" name="correctAnswer" class="correct-radio" value="3">
+            <input type="text" class="answer form-field" placeholder="Risposta 4">
+          </div>
+        </div>
+        <button class="btn btn-primary" id="addSlideBtn">Aggiungi Slide</button>
+      </div>
+
+      <hr style="opacity:0.2; margin: 2rem 0;">
+      
+      <h3>Slides in questa Presentazione</h3>
+      <div id="slideList"></div>
+    </div>
+  
+  </div> <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+    // Configurazione Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyCjBRJritJMO_yQu5JzO7yHTkcRyMIn51w",
+      authDomain: "eldaquiz-cfc72.firebaseapp.com",
+      projectId: "eldaquiz-cfc72",
+      storageBucket: "eldaquiz-cfc72.firebasestorage.app",
+      messagingSenderId: "805402501775",
+      appId: "1:805402501775:web:19f583ac4db621c40886fa"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const presCol = collection(db, "presentations");
+
+    let currentPresentationId = null;
+    let currentSlides = [];
+    let unsubSnapshot = null; 
+
+    // Elementi UI
+    const slideTypeSelect = document.getElementById('slideType');
+    const radioButtons = document.querySelectorAll('.correct-radio');
+
+    onAuthStateChanged(auth, user => {
+      if (!user || user.email !== 'admin@ems.it') {
+        alert("Accesso negato! Verrai reindirizzato.");
+        window.location.href = "admin_login.html"; // Reindirizza al login admin separato
+      } else {
+        document.getElementById('user').textContent = user.email;
+        loadPresentations();
+      }
+    });
+
+    slideTypeSelect.onchange = () => {
+      const isPoll = slideTypeSelect.value === 'poll';
+      radioButtons.forEach(radio => {
+        if (isPoll) {
+          radio.classList.add('hidden');
+        } else {
+          radio.classList.remove('hidden');
+        }
+      });
+    };
+    
+    async function loadPresentations() {
+      const listEl = document.getElementById('presentationList');
+      listEl.innerHTML = 'Caricamento...';
+      const snapshot = await getDocs(presCol);
+      const presentations = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      
+      if (presentations.length === 0) {
+        listEl.innerHTML = '<em>Nessuna presentazione creata.</em>';
+        return;
+      }
+      listEl.innerHTML = presentations.map(p => `
+        <div class="list-item">
+          <div>
+            <strong>${p.title}</strong><br>
+            <small>${(p.slides || []).length} slides</small>
+          </div>
+          <div>
+            <button class="btn btn-green" data-id="${p.id}" data-title="${p.title}">Modifica</button>
+          </div>
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('.btn.btn-green').forEach(btn => {
+        btn.onclick = () => showEditor(btn.dataset.id, btn.dataset.title);
+      });
+    }
+    
+    document.getElementById('createNewPresentationBtn').onclick = async () => {
+      const title = document.getElementById('newPresentationTitle').value.trim();
+      if (!title) return alert('Inserisci un titolo');
+      
+      await addDoc(presCol, {
+        title: title,
+        status: "draft",
+        slides: [] 
+      });
+      document.getElementById('newPresentationTitle').value = '';
+      loadPresentations();
+    };
+
+    function showEditor(id, title) {
+      currentPresentationId = id;
+      document.getElementById('listSection').classList.add('hidden');
+      document.getElementById('editorSection').classList.remove('hidden');
+      document.getElementById('editorTitle').textContent = `Editor: ${title}`;
+      
+      const docRef = doc(db, "presentations", id);
+      if(unsubSnapshot) unsubSnapshot(); 
+      unsubSnapshot = onSnapshot(docRef, (doc) => {
+        const data = doc.data();
+        currentSlides = data.slides || [];
+        renderSlideList();
+      });
+    }
+    
+    document.getElementById('backToListBtn').onclick = () => {
+      if(unsubSnapshot) unsubSnapshot(); 
+      currentPresentationId = null;
+      document.getElementById('listSection').classList.remove('hidden');
+      document.getElementById('editorSection').classList.add('hidden');
+      loadPresentations(); 
+    };
+
+    function renderSlideList() {
+      const listEl = document.getElementById('slideList');
+      if (currentSlides.length === 0) {
+        listEl.innerHTML = '<em>Nessuna slide. Aggiungine una!</em>';
+        return;
+      }
+      listEl.innerHTML = currentSlides.map((slide, index) => {
+        
+        let correctText = '';
+        if (slide.type === 'quiz' && slide.correctIndex != null && slide.correctIndex > -1) {
+          correctText = ` (Corretta: ${slide.answers[slide.correctIndex]})`;
+        } else if (slide.type === 'poll') {
+          correctText = ' (Sondaggio)';
+        }
+        
+        return `
+        <div class="slide-item">
+          <small>[${index + 1}] ${slide.type === 'poll' ? 'Sondaggio' : 'Quiz'}</small>
+          <strong>${slide.question}</strong>
+          <div><small>${correctText}</small></div>
+          <button class="btn btn-red" data-index="${index}" style="padding:0.3rem 0.6rem; font-size:0.8rem;">Elimina</button>
+        </div>
+      `}).join('');
+
+      listEl.querySelectorAll('.btn.btn-red').forEach(btn => {
+        btn.onclick = () => deleteSlide(parseInt(btn.dataset.index, 10));
+      });
+    }
+
+    document.getElementById('addSlideBtn').onclick = async () => {
+      const question = document.getElementById('slideQuestion').value.trim();
+      const type = slideTypeSelect.value;
+      const answers = Array.from(document.querySelectorAll('#answersEditor .answer'))
+                            .map(input => input.value.trim())
+                            .filter(a => a);
+      
+      if (!question || answers.length < 2) {
+        return alert('Compila la domanda e almeno 2 risposte.');
+      }
+
+      let correctIndex = -1;
+      if (type === 'quiz') {
+        const checkedRadio = document.querySelector('input[name="correctAnswer"]:checked');
+        if (checkedRadio) {
+          correctIndex = parseInt(checkedRadio.value, 10);
+        } else {
+          return alert('Seleziona una risposta corretta per il Quiz.');
+        }
+        if (!answers[correctIndex]) {
+            return alert('La risposta corretta selezionata non può essere vuota.');
+        }
+      }
+      
+      const newSlide = {
+        type: type, 
+        question: question,
+        answers: answers,
+        correctIndex: correctIndex
+      };
+
+      const docRef = doc(db, "presentations", currentPresentationId);
+      await updateDoc(docRef, {
+        slides: arrayUnion(newSlide) 
+      });
+
+      document.getElementById('slideQuestion').value = '';
+      document.querySelectorAll('#answersEditor .answer').forEach(input => input.value = '');
+      document.querySelector('input[name="correctAnswer"][value="0"]').checked = true;
+    };
+
+    async function deleteSlide(index) {
+      if (!confirm('Sei sicuro di voler eliminare questa slide?')) return;
+      
+      const slideToRemove = currentSlides[index];
+      if (!slideToRemove) return;
+
+      const docRef = doc(db, "presentations", currentPresentationId);
+      await updateDoc(docRef, {
+        slides: arrayRemove(slideToRemove) 
+      });
+    }
+  </script>
+</body>
+</html>
+

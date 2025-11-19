@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presentatore ELDA MAZZOCCHI SCARZELLA- Dashboard</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+  <script src="js/theme.js" defer></script>
+  </head>
+<body>
+  
+  <div class="container">
+    <header style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+      <h1 style="color:#c7b3ff;">Dashboard Presentatore</h1>
+      <div>
+        <button class="btn btn-primary" id="logoutBtn">Logout</button>
+      </div>
+    </header>
+
+    <div class="presenter-grid">
+      <div>
+        <div class="card">
+          <h3>Presentazioni Create (da Admin)</h3>
+          <div class="quiz-list" id="presentationList"></div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="card">
+          <h3>Live Control</h3>
+          <div style="margin-bottom:0.6rem;">
+            <div>PIN: 483920</div>
+            <div id="pinDisplay" class="pin-display">—</div>
+          </div>
+          <div>
+            <div style="margin-bottom:0.4rem">Titolo: <strong id="liveTitle">—</strong></div>
+            <div>Domanda: <div id="liveQuestion">—</div></div>
+            <div>Slide: <strong id="slideCounter">— / —</strong></div>
+          </div>
+          
+          <div style="margin-top:1rem; display:flex; gap:0.5rem;">
+            <button class="btn btn-secondary" id="prevSlideBtn">Precedente</button>
+            <button class="btn btn-primary" id="nextSlideBtn">Successiva</button>
+          </div>
+
+          <div style="margin-top:1rem">
+            <canvas id="resultsChart" style="width:100%; height:220px;"></canvas>
+          </div>
+          <div style="margin-top:0.8rem">
+            <button class="btn btn-red" id="stopPresentationBtn">Ferma Presentazione</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script type="module" src="./js/presenter-app.js"></script>
+</body>
+</html>
