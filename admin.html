@@ -1,82 +1,104 @@
+<!-- admin.html - Versione migliorata -->
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Admin ELDA MAZZOCCHI SCARZELLA - Gestione Presentazioni">
   <title>Admin ELDA MAZZOCCHI SCARZELLA - Editor Presentazioni</title>
   <script src="js/theme.js" defer></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  
-  </head>
+</head>
 <body>
-
   <div class="container">
-
     <div class="card" id="listSection">
-      <h1>Admin ELDA MAZZOCCHI SCARZELLA - Gestione Presentazioni</h1>
-      <p>Benvenuto <span id="user">admin</span> | <a href="login.html">Logout</a></p>
+      <header class="admin-header">
+        <h1>Admin ELDA MAZZOCCHI SCARZELLA</h1>
+        <p class="user-info">Benvenuto <span id="user">admin</span> | <a href="login.html" class="logout-link">Logout</a></p>
+      </header>
       
-      <h3>Crea Nuova Presentazione</h3>
-      <div style="display:flex; gap:1rem;">
-        <input type="text" id="newPresentationTitle" placeholder="Titolo (es. Riunione Q4)" class="form-field" style="margin:0; flex:1;" />
-        <button class="btn btn-green" id="createNewPresentationBtn">Crea</button>
-      </div>
+      <section class="create-section">
+        <h2>Crea Nuova Presentazione</h2>
+        <div class="create-form">
+          <input type="text" id="newPresentationTitle" placeholder="Titolo (es. Riunione Q4)" class="form-field" />
+          <button class="btn btn-green" id="createNewPresentationBtn" aria-label="Crea nuova presentazione">Crea</button>
+        </div>
+      </section>
 
-      <hr style="opacity:0.2; margin: 2rem 0;">
+      <hr class="section-divider">
 
-      <h3>Presentazioni Esistenti</h3>
-      <div id="presentationList"></div>
+      <section class="existing-presentations">
+        <h2>Presentazioni Esistenti</h2>
+        <div id="presentationList" class="presentation-list" aria-live="polite"></div>
+      </section>
     </div>
 
     <div class="card hidden" id="editorSection">
-      <button class="btn btn-secondary" id="backToListBtn">← Torna alla lista</button>
-      <h1 id="editorTitle">Editor: ...</h1>
-
-      <h3>Aggiungi Nuova Slide</h3>
-      <div style="background:rgba(0,0,0,0.1); padding:1rem; border-radius:12px;">
-        
-        <select id="slideType" class="form-field" style="margin:0.5rem 0;">
-          <option value="quiz">Domanda (Quiz - Scegli risposta corretta)</option>
-          <option value="poll">Sondaggio (Poll - Nessuna risposta corretta)</option>
-        </select>
-        
-        <textarea id="slideQuestion" rows="3" placeholder="Testo domanda o sondaggio..." class="form-field"></textarea>
-        
-        <div id="answersEditor">
-          <div class="answer-row">
-            <input type="radio" name="correctAnswer" class="correct-radio" value="0" checked>
-            <input type="text" class="answer form-field" placeholder="Risposta 1">
-          </div>
-          <div class="answer-row">
-            <input type="radio" name="correctAnswer" class="correct-radio" value="1">
-            <input type="text" class="answer form-field" placeholder="Risposta 2">
-          </div>
-          <div class="answer-row">
-            <input type="radio" name="correctAnswer" class="correct-radio" value="2">
-            <input type="text" class="answer form-field" placeholder="Risposta 3">
-          </div>
-          <div class="answer-row">
-            <input type="radio" name="correctAnswer" class="correct-radio" value="3">
-            <input type="text" class="answer form-field" placeholder="Risposta 4">
-          </div>
-        </div>
-        <button class="btn btn-primary" id="addSlideBtn">Aggiungi Slide</button>
-      </div>
-
-      <hr style="opacity:0.2; margin: 2rem 0;">
+      <nav class="editor-nav">
+        <button class="btn btn-secondary" id="backToListBtn" aria-label="Torna alla lista presentazioni">
+          <i class="fas fa-arrow-left"></i> Torna alla lista
+        </button>
+      </nav>
       
-      <h3>Slides in questa Presentazione</h3>
-      <div id="slideList"></div>
+      <header class="editor-header">
+        <h1 id="editorTitle">Editor: ...</h1>
+      </header>
+
+      <section class="add-slide-section">
+        <h2>Aggiungi Nuova Slide</h2>
+        <div class="slide-form">
+          <select id="slideType" class="form-field" aria-label="Tipo di slide">
+            <option value="quiz">Domanda (Quiz - Scegli risposta corretta)</option>
+            <option value="poll">Sondaggio (Poll - Nessuna risposta corretta)</option>
+          </select>
+          
+          <textarea id="slideQuestion" rows="3" placeholder="Testo domanda o sondaggio..." class="form-field" aria-label="Testo della domanda"></textarea>
+          
+          <div id="answersEditor" class="answers-editor">
+            <div class="answer-row">
+              <input type="radio" name="correctAnswer" class="correct-radio" value="0" checked aria-label="Risposta corretta 1">
+              <input type="text" class="answer form-field" placeholder="Risposta 1" aria-label="Testo risposta 1">
+            </div>
+            <div class="answer-row">
+              <input type="radio" name="correctAnswer" class="correct-radio" value="1" aria-label="Risposta corretta 2">
+              <input type="text" class="answer form-field" placeholder="Risposta 2" aria-label="Testo risposta 2">
+            </div>
+            <div class="answer-row">
+              <input type="radio" name="correctAnswer" class="correct-radio" value="2" aria-label="Risposta corretta 3">
+              <input type="text" class="answer form-field" placeholder="Risposta 3" aria-label="Testo risposta 3">
+            </div>
+            <div class="answer-row">
+              <input type="radio" name="correctAnswer" class="correct-radio" value="3" aria-label="Risposta corretta 4">
+              <input type="text" class="answer form-field" placeholder="Risposta 4" aria-label="Testo risposta 4">
+            </div>
+          </div>
+          <button class="btn btn-primary" id="addSlideBtn" aria-label="Aggiungi slide alla presentazione">Aggiungi Slide</button>
+        </div>
+      </section>
+
+      <hr class="section-divider">
+      
+      <section class="slides-section">
+        <h2>Slides in questa Presentazione</h2>
+        <div id="slideList" class="slide-list" aria-live="polite"></div>
+      </section>
     </div>
-  
-  </div> <script type="module">
+  </div>
+
+  <!-- Loading Spinner -->
+  <div id="loadingSpinner" class="loading-spinner hidden">
+    <div class="spinner"></div>
+    <p>Caricamento...</p>
+  </div>
+
+  <script type="module">
+    // Import Firebase modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, doc, onSnapshot, updateDoc, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Configurazione Firebase
+    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyCjBRJritJMO_yQu5JzO7yHTkcRyMIn51w",
       authDomain: "eldaquiz-cfc72.firebaseapp.com",
@@ -86,80 +108,136 @@
       appId: "1:805402501775:web:19f583ac4db621c40886fa"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
     const presCol = collection(db, "presentations");
 
+    // Global state
     let currentPresentationId = null;
     let currentSlides = [];
-    let unsubSnapshot = null; 
+    let unsubSnapshot = null;
 
-    // Elementi UI
+    // UI Elements
     const slideTypeSelect = document.getElementById('slideType');
     const radioButtons = document.querySelectorAll('.correct-radio');
+    const loadingSpinner = document.getElementById('loadingSpinner');
 
+    // Utility functions
+    function showLoading() {
+      loadingSpinner.classList.remove('hidden');
+    }
+
+    function hideLoading() {
+      loadingSpinner.classList.add('hidden');
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.add('toast-fade-out');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // Auth state listener
     onAuthStateChanged(auth, user => {
       if (!user || user.email !== 'admin@ems.it') {
-        alert("Accesso negato! Verrai reindirizzato.");
-        window.location.href = "admin_login.html"; // Reindirizza al login admin separato
+        showToast('Accesso negato! Verrai reindirizzato.', 'error');
+        setTimeout(() => {
+          window.location.href = "admin_login.html";
+        }, 1500);
       } else {
         document.getElementById('user').textContent = user.email;
         loadPresentations();
       }
     });
 
+    // Slide type change handler
     slideTypeSelect.onchange = () => {
       const isPoll = slideTypeSelect.value === 'poll';
       radioButtons.forEach(radio => {
-        if (isPoll) {
-          radio.classList.add('hidden');
-        } else {
-          radio.classList.remove('hidden');
-        }
+        radio.classList.toggle('hidden', isPoll);
       });
     };
     
+    // Load presentations
     async function loadPresentations() {
+      showLoading();
       const listEl = document.getElementById('presentationList');
-      listEl.innerHTML = 'Caricamento...';
-      const snapshot = await getDocs(presCol);
-      const presentations = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      listEl.innerHTML = '<div class="loading-placeholder">Caricamento presentazioni...</div>';
       
-      if (presentations.length === 0) {
-        listEl.innerHTML = '<em>Nessuna presentazione creata.</em>';
-        return;
-      }
-      listEl.innerHTML = presentations.map(p => `
-        <div class="list-item">
-          <div>
-            <strong>${p.title}</strong><br>
-            <small>${(p.slides || []).length} slides</small>
+      try {
+        const snapshot = await getDocs(presCol);
+        const presentations = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        
+        if (presentations.length === 0) {
+          listEl.innerHTML = '<div class="empty-state"><i class="fas fa-folder-open"></i><p>Nessuna presentazione creata.</p></div>';
+          return;
+        }
+        
+        listEl.innerHTML = presentations.map(p => `
+          <div class="presentation-item">
+            <div class="presentation-info">
+              <h4>${p.title}</h4>
+              <p class="slide-count">${(p.slides || []).length} slides</p>
+              ${p.status === 'live' ? '<span class="status-badge live">LIVE</span>' : ''}
+            </div>
+            <div class="presentation-actions">
+              <button class="btn btn-green edit-btn" data-id="${p.id}" data-title="${p.title}" aria-label="Modifica presentazione ${p.title}">
+                <i class="fas fa-edit"></i> Modifica
+              </button>
+            </div>
           </div>
-          <div>
-            <button class="btn btn-green" data-id="${p.id}" data-title="${p.title}">Modifica</button>
-          </div>
-        </div>
-      `).join('');
+        `).join('');
 
-      listEl.querySelectorAll('.btn.btn-green').forEach(btn => {
-        btn.onclick = () => showEditor(btn.dataset.id, btn.dataset.title);
-      });
+        // Add event listeners to edit buttons
+        listEl.querySelectorAll('.edit-btn').forEach(btn => {
+          btn.onclick = () => showEditor(btn.dataset.id, btn.dataset.title);
+        });
+      } catch (error) {
+        console.error('Errore nel caricamento presentazioni:', error);
+        listEl.innerHTML = '<div class="error-state"><i class="fas fa-exclamation-triangle"></i><p>Errore nel caricamento. Riprova.</p></div>';
+        showToast('Errore nel caricamento delle presentazioni', 'error');
+      } finally {
+        hideLoading();
+      }
     }
     
+    // Create new presentation
     document.getElementById('createNewPresentationBtn').onclick = async () => {
-      const title = document.getElementById('newPresentationTitle').value.trim();
-      if (!title) return alert('Inserisci un titolo');
+      const titleInput = document.getElementById('newPresentationTitle');
+      const title = titleInput.value.trim();
       
-      await addDoc(presCol, {
-        title: title,
-        status: "draft",
-        slides: [] 
-      });
-      document.getElementById('newPresentationTitle').value = '';
-      loadPresentations();
+      if (!title) {
+        showToast('Inserisci un titolo per la presentazione', 'warning');
+        titleInput.focus();
+        return;
+      }
+      
+      try {
+        await addDoc(presCol, {
+          title: title,
+          status: "draft",
+          slides: [],
+          createdAt: new Date()
+        });
+        
+        titleInput.value = '';
+        showToast('Presentazione creata con successo!', 'success');
+        loadPresentations();
+      } catch (error) {
+        console.error('Errore nella creazione presentazione:', error);
+        showToast('Errore nella creazione della presentazione', 'error');
+      }
     };
 
+    // Show editor
     function showEditor(id, title) {
       currentPresentationId = id;
       document.getElementById('listSection').classList.add('hidden');
@@ -168,29 +246,38 @@
       
       const docRef = doc(db, "presentations", id);
       if(unsubSnapshot) unsubSnapshot(); 
+      
+      showLoading();
       unsubSnapshot = onSnapshot(docRef, (doc) => {
         const data = doc.data();
         currentSlides = data.slides || [];
         renderSlideList();
+        hideLoading();
+      }, (error) => {
+        console.error('Errore nel caricamento slide:', error);
+        showToast('Errore nel caricamento delle slide', 'error');
+        hideLoading();
       });
     }
     
+    // Back to list
     document.getElementById('backToListBtn').onclick = () => {
       if(unsubSnapshot) unsubSnapshot(); 
       currentPresentationId = null;
       document.getElementById('listSection').classList.remove('hidden');
       document.getElementById('editorSection').classList.add('hidden');
-      loadPresentations(); 
+      loadPresentations();
     };
 
+    // Render slide list
     function renderSlideList() {
       const listEl = document.getElementById('slideList');
       if (currentSlides.length === 0) {
-        listEl.innerHTML = '<em>Nessuna slide. Aggiungine una!</em>';
+        listEl.innerHTML = '<div class="empty-state"><i class="fas fa-slideshare"></i><p>Nessuna slide. Aggiungine una!</p></div>';
         return;
       }
+      
       listEl.innerHTML = currentSlides.map((slide, index) => {
-        
         let correctText = '';
         if (slide.type === 'quiz' && slide.correctIndex != null && slide.correctIndex > -1) {
           correctText = ` (Corretta: ${slide.answers[slide.correctIndex]})`;
@@ -200,18 +287,29 @@
         
         return `
         <div class="slide-item">
-          <small>[${index + 1}] ${slide.type === 'poll' ? 'Sondaggio' : 'Quiz'}</small>
-          <strong>${slide.question}</strong>
-          <div><small>${correctText}</small></div>
-          <button class="btn btn-red" data-index="${index}" style="padding:0.3rem 0.6rem; font-size:0.8rem;">Elimina</button>
+          <div class="slide-info">
+            <span class="slide-number">${index + 1}</span>
+            <div class="slide-content">
+              <h5>${slide.question}</h5>
+              <div class="slide-meta">
+                <span class="slide-type">${slide.type === 'poll' ? 'Sondaggio' : 'Quiz'}</span>
+                <span class="correct-answer">${correctText}</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-red delete-slide-btn" data-index="${index}" aria-label="Elimina slide ${index + 1}">
+            <i class="fas fa-trash"></i> Elimina
+          </button>
         </div>
       `}).join('');
 
-      listEl.querySelectorAll('.btn.btn-red').forEach(btn => {
+      // Add event listeners to delete buttons
+      listEl.querySelectorAll('.delete-slide-btn').forEach(btn => {
         btn.onclick = () => deleteSlide(parseInt(btn.dataset.index, 10));
       });
     }
 
+    // Add slide
     document.getElementById('addSlideBtn').onclick = async () => {
       const question = document.getElementById('slideQuestion').value.trim();
       const type = slideTypeSelect.value;
@@ -219,8 +317,15 @@
                             .map(input => input.value.trim())
                             .filter(a => a);
       
-      if (!question || answers.length < 2) {
-        return alert('Compila la domanda e almeno 2 risposte.');
+      if (!question) {
+        showToast('Inserisci il testo della domanda', 'warning');
+        document.getElementById('slideQuestion').focus();
+        return;
+      }
+      
+      if (answers.length < 2) {
+        showToast('Inserisci almeno 2 risposte', 'warning');
+        return;
       }
 
       let correctIndex = -1;
@@ -229,10 +334,12 @@
         if (checkedRadio) {
           correctIndex = parseInt(checkedRadio.value, 10);
         } else {
-          return alert('Seleziona una risposta corretta per il Quiz.');
+          showToast('Seleziona una risposta corretta per il Quiz', 'warning');
+          return;
         }
         if (!answers[correctIndex]) {
-            return alert('La risposta corretta selezionata non può essere vuota.');
+          showToast('La risposta corretta selezionata non può essere vuota', 'warning');
+          return;
         }
       }
       
@@ -240,31 +347,60 @@
         type: type, 
         question: question,
         answers: answers,
-        correctIndex: correctIndex
+        correctIndex: correctIndex,
+        createdAt: new Date()
       };
 
-      const docRef = doc(db, "presentations", currentPresentationId);
-      await updateDoc(docRef, {
-        slides: arrayUnion(newSlide) 
-      });
+      try {
+        const docRef = doc(db, "presentations", currentPresentationId);
+        await updateDoc(docRef, {
+          slides: arrayUnion(newSlide)
+        });
 
-      document.getElementById('slideQuestion').value = '';
-      document.querySelectorAll('#answersEditor .answer').forEach(input => input.value = '');
-      document.querySelector('input[name="correctAnswer"][value="0"]').checked = true;
+        // Reset form
+        document.getElementById('slideQuestion').value = '';
+        document.querySelectorAll('#answersEditor .answer').forEach(input => input.value = '');
+        document.querySelector('input[name="correctAnswer"][value="0"]').checked = true;
+        
+        showToast('Slide aggiunta con successo!', 'success');
+      } catch (error) {
+        console.error('Errore nell\'aggiunta slide:', error);
+        showToast('Errore nell\'aggiunta della slide', 'error');
+      }
     };
 
+    // Delete slide
     async function deleteSlide(index) {
       if (!confirm('Sei sicuro di voler eliminare questa slide?')) return;
       
       const slideToRemove = currentSlides[index];
       if (!slideToRemove) return;
 
-      const docRef = doc(db, "presentations", currentPresentationId);
-      await updateDoc(docRef, {
-        slides: arrayRemove(slideToRemove) 
-      });
+      try {
+        const docRef = doc(db, "presentations", currentPresentationId);
+        await updateDoc(docRef, {
+          slides: arrayRemove(slideToRemove)
+        });
+        
+        showToast('Slide eliminata con successo', 'success');
+      } catch (error) {
+        console.error('Errore nell\'eliminazione slide:', error);
+        showToast('Errore nell\'eliminazione della slide', 'error');
+      }
     }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+Enter to add slide
+      if (e.ctrlKey && e.key === 'Enter' && !document.getElementById('editorSection').classList.contains('hidden')) {
+        document.getElementById('addSlideBtn').click();
+      }
+      
+      // Escape to go back
+      if (e.key === 'Escape' && !document.getElementById('editorSection').classList.contains('hidden')) {
+        document.getElementById('backToListBtn').click();
+      }
+    });
   </script>
 </body>
 </html>
-
