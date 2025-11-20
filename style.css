@@ -1,5 +1,6 @@
+/* style.css - Versione migliorata */
 /* ===============================
-   ELDA QUIZ - STILE UNIFICATO CON TEMA
+   ELDA QUIZ - STILE UNIFICATO CON TEMA MIGLIORATO
    =============================== */
 
 :root {
@@ -8,49 +9,148 @@
   --violet-dark: #5b21b6;
   --accent: #a855f7;
   --pink: #f472b6;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
   
   --text: #222222;
   --text-muted: #555555;
-  --bg-main: #f4f7f6; /* Sfondo pagina */
-  --bg-card: #ffffff; /* Sfondo card */
-  --border-light: #e0e0e0; /* Bordo input */
+  --bg-main: #f4f7f6;
+  --bg-card: #ffffff;
+  --border-light: #e0e0e0;
   
   --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   --shadow-hover: 0 12px 35px rgba(0, 0, 0, 0.12);
   --radius: 15px;
-  --backdrop-filter: none; /* Niente effetto vetro di default */
+  --backdrop-filter: none;
 }
 
 body[data-theme="dark"] {
   /* Variabili sovrascritte (Tema Notte - "Dark & Glass") */
   --text: #ffffff;
   --text-muted: #e0e0e0;
-  --bg-main: linear-gradient(135deg, #1e1b4b, #4c1d95, #7c3aed); /* Sfondo gradiente */
-  --bg-card: rgba(255, 255, 255, 0.12); /* Vetro */
-  --border-light: rgba(255, 255, 255, 0.2); /* Bordo vetro */
+  --bg-main: linear-gradient(135deg, #1e1b4b, #4c1d95, #7c3aed);
+  --bg-card: rgba(255, 255, 255, 0.12);
+  --border-light: rgba(255, 255, 255, 0.2);
   
   --shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   --shadow-hover: 0 30px 60px rgba(0, 0, 0, 0.6);
-  --backdrop-filter: blur(16px); /* Effetto vetro ATTIVO */
+  --backdrop-filter: blur(16px);
 }
 
-
 /* ===============================
-   STILI GLOBALI (Non cambiano)
+   STILI GLOBALI MIGLIORATI
    =============================== */
+
+* {
+  box-sizing: border-box;
+}
 
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: 'Poppins', sans-serif;
-  background: var(--bg-main); /* USA LA VARIABILE */
-  color: var(--text); /* USA LA VARIABILE */
+  background: var(--bg-main);
+  color: var(--text);
   overflow-y: auto;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, color 0.3s ease;
+  line-height: 1.6;
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 2px;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: white;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Toast notifications */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  max-width: 300px;
+  animation: toastSlideIn 0.3s ease;
+}
+
+.toast-success {
+  background-color: var(--success);
+}
+
+.toast-error {
+  background-color: var(--error);
+}
+
+.toast-warning {
+  background-color: var(--warning);
+}
+
+.toast-fade-out {
+  animation: toastSlideOut 0.3s ease forwards;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 }
 
 /* Layout per centrare (Login, Join, Index) */
@@ -65,43 +165,45 @@ body {
   text-align: center;
 }
 
-/* La card universale */
+/* La card universale migliorata */
 .card {
-  background: var(--bg-card); /* USA LA VARIABILE */
-  backdrop-filter: var(--backdrop-filter); /* USA LA VARIABILE */
+  background: var(--bg-card);
+  backdrop-filter: var(--backdrop-filter);
   padding: 2.5rem 2rem;
   border-radius: var(--radius);
-  box-shadow: var(--shadow); /* USA LA VARIABILE */
+  box-shadow: var(--shadow);
   transition: all 0.3s ease;
-  border: 1px solid var(--border-light); /* USA LA VARIABILE */
+  border: 1px solid var(--border-light);
+  width: 100%;
+  max-width: 800px;
 }
 
 .card:hover {
-  background: var(--bg-card-hover, var(--bg-card)); /* (Usa un hover se esiste, sennò il default) */
   box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
 }
 
-/* Tipografia */
-h1, h2, h3, h4 {
+/* Tipografia migliorata */
+h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 1rem;
   font-weight: 600;
-  /* Manteniamo i titoli viola, stanno bene su entrambi */
-  color: var(--violet-dark); 
+  color: var(--violet-dark);
+  line-height: 1.3;
 }
 
-/* ... ma nel tema scuro, li rendiamo più chiari */
 body[data-theme="dark"] h1,
 body[data-theme="dark"] h2,
 body[data-theme="dark"] h3,
-body[data-theme="dark"] h4 {
-  color: #c7b3ff; /* Viola chiaro */
+body[data-theme="dark"] h4,
+body[data-theme="dark"] h5,
+body[data-theme="dark"] h6 {
+  color: #c7b3ff;
 }
-
 
 h1.brand-title {
   font-family: 'Fredoka One', cursive;
-  font-size: 3.5rem;
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
   background: linear-gradient(45deg, var(--accent), var(--pink));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -111,31 +213,42 @@ h1.brand-title {
 p {
   font-size: 1.1rem;
   opacity: 1;
-  color: var(--text-muted); /* USA LA VARIABILE */
+  color: var(--text-muted);
   line-height: 1.6;
+  margin-bottom: 1.5rem;
 }
 
 a {
   color: var(--violet);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-/* Logo */
+a:hover {
+  color: var(--violet-dark);
+}
+
+/* Logo migliorato */
 .logo {
   width: 150px;
+  height: 150px;
   border-radius: 50%;
   margin-bottom: 1.5rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  object-fit: cover;
 }
 
-/* Pulsanti Standard */
+/* Pulsanti Standard migliorati */
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   border: none;
   border-radius: var(--radius);
   padding: 1rem 2rem;
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 600;
   font-family: 'Poppins', sans-serif;
   color: white;
   cursor: pointer;
@@ -143,12 +256,30 @@ a {
   text-align: center;
   text-decoration: none;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover:before {
+  left: 100%;
 }
 
 .btn-primary {
   background: var(--violet);
   box-shadow: 0 5px 20px rgba(124, 58, 237, 0.3);
 }
+
 .btn-primary:hover {
   background: var(--violet-dark);
   transform: translateY(-3px);
@@ -160,22 +291,23 @@ a {
   border: 2px solid var(--violet);
   color: var(--violet);
 }
+
 .btn-secondary:hover {
   background: rgba(124, 58, 237, 0.05);
   transform: translateY(-3px);
 }
-/* ... ma nel tema scuro, il secondario è diverso (effetto vetro) */
+
 body[data-theme="dark"] .btn-secondary {
   background: transparent;
   border: 2px solid var(--border-light);
   color: white;
 }
+
 body[data-theme="dark"] .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-
-/* Input Standard (Login/Join) */
+/* Input Standard migliorati */
 .input-field {
   width: 100%;
   padding: 1.2rem;
@@ -183,25 +315,32 @@ body[data-theme="dark"] .btn-secondary:hover {
   border: 1px solid var(--border-light);
   border-radius: var(--radius);
   font-size: 1.1rem;
-  background: rgba(0, 0, 0, 0.03); /* Default chiaro */
+  background: rgba(0, 0, 0, 0.03);
   color: var(--text);
   text-align: center;
   box-sizing: border-box;
+  transition: all 0.3s ease;
 }
+
+.input-field:focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
 .input-field::placeholder {
   color: rgba(0, 0, 0, 0.4);
 }
-/* ... ma nel tema scuro... */
+
 body[data-theme="dark"] .input-field {
   background: rgba(255, 255, 255, 0.1);
   color: white;
 }
+
 body[data-theme="dark"] .input-field::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
 
-
-/* Stili Card Profilo (index.html) */
+/* Stili Card Profilo migliorati */
 .profile-container {
   display: flex;
   flex-wrap: wrap;
@@ -209,48 +348,324 @@ body[data-theme="dark"] .input-field::placeholder {
   gap: 2.5rem;
   margin-top: 3rem;
 }
+
 .profile-card {
   width: 260px;
   text-decoration: none;
   color: var(--text);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
 }
+
 .profile-card:hover {
   transform: translateY(-12px);
+  text-decoration: none;
 }
+
 .profile-card i {
   font-size: 4.5rem;
   margin-bottom: 1.5rem;
   display: block;
   color: var(--violet);
+  transition: color 0.3s ease;
 }
+
+.profile-card:hover i {
+  color: var(--accent);
+}
+
 .profile-card h2 {
   font-size: 1.75rem;
   margin: 0;
   color: var(--violet-dark);
 }
-/* ... ma nel tema scuro... */
+
 body[data-theme="dark"] .profile-card {
   color: white;
 }
+
 body[data-theme="dark"] .profile-card i {
   color: #c7b3ff;
 }
+
 body[data-theme="dark"] .profile-card h2 {
   color: white;
 }
 
-
 /* ===============================
-   LAYOUT DASHBOARD (Admin/Presenter)
+   LAYOUT DASHBOARD MIGLIORATO (Admin/Presenter)
    =============================== */
 
 .container {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 }
 
-/* Campi Form (Dashboard) */
+/* Header Admin migliorato */
+.admin-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.admin-header h1 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.user-info {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+.logout-link {
+  color: var(--error);
+}
+
+/* Sezioni Admin */
+.create-section,
+.existing-presentations,
+.add-slide-section,
+.slides-section {
+  margin-bottom: 2.5rem;
+}
+
+.create-form {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.create-form .form-field {
+  margin: 0;
+  flex: 1;
+}
+
+.section-divider {
+  opacity: 0.2;
+  margin: 2rem 0;
+  border: none;
+  border-top: 1px solid var(--border-light);
+}
+
+/* Lista presentazioni migliorata */
+.presentation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.presentation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.presentation-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.presentation-info h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+}
+
+.slide-count {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.status-badge.live {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--error);
+}
+
+.presentation-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Editor slide migliorato */
+.editor-nav {
+  margin-bottom: 1.5rem;
+}
+
+.editor-header {
+  margin-bottom: 2rem;
+}
+
+.slide-form {
+  background: rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  border-radius: 12px;
+}
+
+body[data-theme="dark"] .slide-form {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.answers-editor {
+  margin: 1.5rem 0;
+}
+
+.answer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.answer-row .form-field {
+  margin: 0;
+  flex: 1;
+}
+
+.answer-row input[type="radio"] {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.correct-radio.hidden {
+  visibility: hidden;
+}
+
+/* Lista slide migliorata */
+.slide-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.slide-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem;
+  background: var(--bg-main);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+body[data-theme="dark"] .slide-item {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.slide-item:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+body[data-theme="dark"] .slide-item:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.slide-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  flex: 1;
+}
+
+.slide-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--violet);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.slide-content {
+  flex: 1;
+}
+
+.slide-content h5 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  line-height: 1.4;
+}
+
+.slide-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.slide-type {
+  font-weight: 600;
+}
+
+/* Stati vuoti e di caricamento */
+.empty-state,
+.error-state,
+.loading-placeholder {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+
+.empty-state i,
+.error-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+  opacity: 0.7;
+}
+
+.error-state {
+  color: var(--error);
+}
+
+/* Colori Pulsanti Aggiuntivi */
+.btn-green { 
+  background: var(--success); 
+  box-shadow: 0 5px 20px rgba(16, 185, 129, 0.3);
+}
+
+.btn-green:hover { 
+  background: #059669; 
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(5, 150, 105, 0.4);
+}
+
+.btn-red { 
+  background: var(--error); 
+  box-shadow: 0 5px 20px rgba(239, 68, 68, 0.3);
+}
+
+.btn-red:hover { 
+  background: #dc2626; 
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.4);
+}
+
+/* Campi Form (Dashboard) migliorati */
 .form-field {
   width: 100%;
   padding: 1rem;
@@ -262,110 +677,27 @@ body[data-theme="dark"] .profile-card h2 {
   background: var(--bg-card);
   color: var(--text);
   box-sizing: border-box;
+  transition: all 0.3s ease;
 }
-/* ... ma nel tema scuro... */
+
+.form-field:focus {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
 body[data-theme="dark"] .form-field {
   background: rgba(0, 0, 0, 0.2);
   color: white;
 }
 
-/* Colori Pulsanti Aggiuntivi */
-.btn-green { background: #10b981; }
-.btn-green:hover { background: #059669; }
-.btn-red { background: #ef4444; }
-.btn-red:hover { background: #dc2626; }
-
-/* Stili Lista (Admin) */
-.list-item {
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  padding: 1rem 1.5rem;
-  border-radius: 12px;
-  margin: 1rem 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.slide-item {
-  background: var(--bg-main);
-  border: 1px solid var(--border-light);
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  margin: 0.5rem 0;
-}
-/* ... ma nel tema scuro... */
-body[data-theme="dark"] .list-item {
-  background: rgba(0, 0, 0, 0.2);
-}
-body[data-theme="dark"] .slide-item {
-  background: rgba(0, 0, 0, 0.3);
-}
-
-
-.answer-row {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-.answer-row .form-field { margin: 0.5rem 0; flex: 1; }
-.answer-row input[type="radio"] { width: 22px; height: 22px; flex-shrink: 0; }
-.correct-radio.hidden { visibility: hidden; }
-
 /* ===============================
-   STILI PER PRESENTER.HTML
+   STILI PER PLAYER.HTML MIGLIORATI
    =============================== */
-
-.presenter-grid {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 1rem;
-  align-items: start;
-}
-.pin-display {
-  font-size: 2.6rem;
-  background: var(--bg-main);
-  padding: 0.6rem 1rem;
-  border-radius: 12px;
-  display: inline-block;
-  font-weight: 700;
-  color: var(--violet-dark);
-  border: 1px solid var(--border-light);
-}
-.quiz-list {
-  max-height: 420px;
-  overflow: auto;
-  margin-top: 0.5rem;
-}
-.quiz-item {
-  padding: 1rem;
-  background: var(--bg-main);
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  margin-bottom: 0.6rem;
-  display: flex;
-  justify-content: space-between;
-  gap: 0.6rem;
-  align-items: center;
-}
-/* ... ma nel tema scuro... */
-body[data-theme="dark"] .pin-display {
-  background: rgba(0,0,0,0.3);
-  color: white;
-}
-body[data-theme="dark"] .quiz-item {
-  background: rgba(0,0,0,0.2);
-}
-
-
-/* ===============================
-   STILI PER PLAYER.HTML
-   =============================== */
-
-html, body.player-page { height: 100%; }
 
 .player-page {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 .player-header {
@@ -385,7 +717,7 @@ html, body.player-page { height: 100%; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  padding: 2rem;
   text-align: center;
   font-size: 1.6rem;
 }
@@ -395,15 +727,16 @@ html, body.player-page { height: 100%; }
   gap: 0.6rem;
   justify-content: center;
   margin-top: 1rem;
+  flex-wrap: wrap;
 }
 
 .player-answers-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
   padding: 1rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -417,11 +750,98 @@ html, body.player-page { height: 100%; }
   cursor: pointer;
   border: none;
   color: white;
-  transition: transform 0.2s ease;
+  transition: all 0.2s ease;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
-.player-answer-btn:hover { transform: scale(1.03); }
 
+.player-answer-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.player-answer-btn:active {
+  transform: scale(0.98);
+}
+
+/* Colori risposte */
 .btn-red { background: #ef4444; }
 .btn-blue { background: #3b82f6; }
-.btn-yellow { background: #fbbf24; }
+.btn-yellow { background: #fbbf24; color: #333; }
 .btn-green { background: #10b981; }
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .card {
+    padding: 1.5rem 1rem;
+  }
+  
+  .create-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .presentation-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .presentation-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .slide-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .player-answers-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .profile-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .profile-card {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+
+/* Animazioni aggiuntive */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease;
+}
