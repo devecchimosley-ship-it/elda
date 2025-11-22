@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -6,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Presentatore ELDA MAZZOCCHI SCARZELLA - Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  
-  <script src="js/theme.js" defer></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -59,7 +55,7 @@
       padding: 2rem;
     }
 
-    /* Header migliorato */
+    /* Header */
     header {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
@@ -92,7 +88,7 @@
       align-items: center;
     }
 
-    /* Pulsanti migliorati */
+    /* Pulsanti */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -109,8 +105,13 @@
       text-decoration: none;
     }
 
-    .btn:hover {
+    .btn:hover:not(:disabled) {
       transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .btn-primary {
@@ -118,7 +119,7 @@
       box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
       background: var(--violet-dark);
     }
 
@@ -126,6 +127,10 @@
       background: transparent;
       border: 2px solid var(--border-light);
       color: var(--text);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(124, 58, 237, 0.05);
     }
 
     .btn-success {
@@ -141,13 +146,7 @@
       font-size: 0.85rem;
     }
 
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    /* Grid migliorata */
+    /* Grid Layout */
     .presenter-grid {
       display: grid;
       grid-template-columns: 1fr 480px;
@@ -161,7 +160,7 @@
       }
     }
 
-    /* Card migliorata */
+    /* Card */
     .card {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
@@ -185,7 +184,7 @@
       color: #c7b3ff;
     }
 
-    /* Lista presentazioni migliorata */
+    /* Lista presentazioni */
     .presentations-list {
       display: flex;
       flex-direction: column;
@@ -261,7 +260,7 @@
       50% { opacity: 0.6; }
     }
 
-    /* Control Panel migliorato */
+    /* Control Panel */
     .control-panel {
       position: sticky;
       top: 1rem;
@@ -323,6 +322,11 @@
     .preview-value {
       font-weight: 600;
       color: var(--text);
+      text-align: right;
+      max-width: 60%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .slide-navigation {
@@ -343,7 +347,7 @@
       grid-column: 1 / -1;
     }
 
-    /* Chart migliorato */
+    /* Chart */
     .chart-container {
       background: rgba(0,0,0,0.03);
       padding: 1rem;
@@ -405,22 +409,7 @@
       display: block;
     }
 
-    /* Loading */
-    .loading {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Toast notifications */
+    /* Toast */
     .toast {
       position: fixed;
       bottom: 2rem;
@@ -453,7 +442,27 @@
     .toast.warning { border-left: 4px solid var(--warning); }
 
     .hidden { display: none !important; }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .presenter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .control-panel {
+        position: static;
+      }
+    }
   </style>
+  <script src="js/theme.js" defer></script>
 </head>
 <body>
   
@@ -474,7 +483,7 @@
     </header>
 
     <div class="presenter-grid">
-      <!-- Colonna sinistra: Lista presentazioni -->
+      <!-- Lista presentazioni -->
       <div>
         <div class="card">
           <h3>
@@ -490,7 +499,7 @@
         </div>
       </div>
 
-      <!-- Colonna destra: Pannello di controllo -->
+      <!-- Pannello di controllo -->
       <aside class="control-panel">
         <div class="card">
           <h3>
@@ -504,8 +513,8 @@
             <div class="pin-display" id="pinDisplay">——————</div>
           </div>
 
-          <!-- Preview presentazione -->
-          <div class="presentation-preview" id="presentationPreview">
+          <!-- Preview -->
+          <div class="presentation-preview">
             <div class="preview-row">
               <span class="preview-label">Presentazione:</span>
               <span class="preview-value" id="liveTitle">—</span>
@@ -528,7 +537,7 @@
             </div>
           </div>
 
-          <!-- Navigazione slide -->
+          <!-- Navigazione -->
           <div class="slide-navigation">
             <div class="slide-counter" id="slideCounter">— / —</div>
             <button class="btn btn-secondary" id="prevSlideBtn" disabled>
@@ -556,10 +565,9 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, collection, onSnapshot, getDocs, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, collection, onSnapshot, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
     import { Chart } from "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js";
 
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyCjBRJritJMO_yQu5JzO7yHTkcRyMIn51w",
       authDomain: "eldaquiz-cfc72.firebaseapp.com",
@@ -573,7 +581,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Stato globale
+    // Stato
     let currentChart = null;
     let currentResponsesUnsub = null;
     let allPresentations = [];
@@ -582,7 +590,7 @@
     let liveSlideIndex = -1;
     let uniquePlayers = new Set();
 
-    // Elementi UI
+    // UI
     const pinDisplay = document.getElementById('pinDisplay');
     const liveTitle = document.getElementById('liveTitle');
     const liveQuestion = document.getElementById('liveQuestion');
@@ -596,7 +604,7 @@
     const logoutBtn = document.getElementById('logoutBtn');
     const refreshBtn = document.getElementById('refreshBtn');
 
-    // Protezione pagina
+    // Autenticazione
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = 'login.html';
@@ -609,10 +617,11 @@
     logoutBtn.addEventListener('click', async () => {
       try {
         await signOut(auth);
-        showToast('Logout effettuato con successo', 'success');
+        showToast('Logout effettuato', 'success');
         setTimeout(() => window.location.href = 'login.html', 1000);
       } catch (err) {
-        showToast('Errore durante il logout', 'error');
+        console.error(err);
+        showToast('Errore logout', 'error');
       }
     });
 
@@ -625,17 +634,12 @@
       }, 1000);
     });
 
-    // Toast notifications
+    // Toast
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
-      
       const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
-      toast.innerHTML = `
-        <i class="fas fa-${icon}"></i>
-        <span>${message}</span>
-      `;
-      
+      toast.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     }
@@ -661,7 +665,6 @@
         if (slideData) {
           liveQuestion.textContent = slideData.question;
           slideCounter.textContent = `Slide ${liveSlideIndex + 1} / ${livePresentationData.slides.length}`;
-          
           prevSlideBtn.disabled = (liveSlideIndex === 0);
           nextSlideBtn.disabled = (liveSlideIndex === livePresentationData.slides.length - 1);
         }
@@ -681,9 +684,8 @@
             <div class="empty-state">
               <i class="fas fa-folder-open"></i>
               <p>Nessuna presentazione disponibile</p>
-              <small>Contatta l'admin per creare nuove presentazioni</small>
-            </div>
-          `;
+              <small>Contatta l'admin per creare presentazioni</small>
+            </div>`;
           return;
         }
         
@@ -704,16 +706,10 @@
             </button>
           </div>
         `).join('');
-        
       } catch (err) {
-        console.error("Errore nel caricare le presentazioni:", err);
-        presentationListEl.innerHTML = `
-          <div class="empty-state">
-            <i class="fas fa-exclamation-triangle"></i>
-            <p style="color: var(--danger);">Errore nel caricamento</p>
-          </div>
-        `;
-        showToast('Errore nel caricare le presentazioni', 'error');
+        console.error(err);
+        presentationListEl.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p style="color: var(--danger);">Errore</p></div>';
+        showToast('Errore caricamento', 'error');
       }
     }
 
@@ -727,56 +723,50 @@
         }
         
         if (!livePresentationData.slides || livePresentationData.slides.length === 0) {
-          showToast('Questa presentazione non ha slide', 'warning');
+          showToast('Nessuna slide', 'warning');
           return;
         }
         
         livePresentationId = id;
-        
         const pin = (Math.floor(Math.random() * 900000) + 100000).toString();
         livePresentationData.pin = pin;
         
         await updateDoc(doc(db, "presentations", id), { status: 'live', pin: pin });
-        
         await goToSlide(0);
         await loadPresentations();
-        
-        showToast('Presentazione lanciata con successo!', 'success');
+        showToast('Presentazione avviata!', 'success');
       } catch (err) {
-        console.error("Errore durante il lancio:", err);
-        showToast('Errore nel lanciare la presentazione', 'error');
+        console.error(err);
+        showToast('Errore avvio', 'error');
         livePresentationData = null;
         livePresentationId = null;
       }
     };
 
-    // Naviga a slide
+    // Naviga slide
     async function goToSlide(index) {
       try {
-        if (!livePresentationData || !livePresentationData.slides) return;
+        if (!livePresentationData?.slides) return;
         if (index < 0 || index >= livePresentationData.slides.length) return;
         
         liveSlideIndex = index;
-
         await setDoc(doc(db, "status", "livePresentation"), { 
           activeId: livePresentationId, 
           currentSlide: liveSlideIndex 
         });
 
         updatePresenterUI();
-
-        const currentSlideData = livePresentationData.slides[liveSlideIndex];
-        startResponsesListener(livePresentationId, liveSlideIndex, currentSlideData.answers);
+        const slideData = livePresentationData.slides[liveSlideIndex];
+        startResponsesListener(livePresentationId, liveSlideIndex, slideData.answers);
       } catch (err) {
-        console.error("Errore nel cambiare slide:", err);
-        showToast('Errore nel cambiare slide', 'error');
+        console.error(err);
+        showToast('Errore cambio slide', 'error');
       }
     }
 
     // Listener risposte
     function startResponsesListener(presentationId, slideIndex, answers) {
       if (currentResponsesUnsub) currentResponsesUnsub();
-      
       uniquePlayers.clear();
       
       currentResponsesUnsub = onSnapshot(
@@ -786,7 +776,6 @@
           const slideResponses = responses.filter(r => r.slide === slideIndex);
           
           const counts = new Array(answers.length).fill(0);
-          
           slideResponses.forEach(r => {
             if (typeof r.answer === 'number' && counts[r.answer] !== undefined) {
               counts[r.answer]++;
@@ -796,7 +785,6 @@
           
           responseCount.textContent = slideResponses.length;
           playerCount.textContent = uniquePlayers.size;
-          
           updateChart(answers, counts);
         }
       );
@@ -806,9 +794,7 @@
     function updateChart(labels, data) {
       const ctx = document.getElementById('resultsChart');
       
-      if (currentChart) {
-        currentChart.destroy();
-      }
+      if (currentChart) currentChart.destroy();
       
       currentChart = new Chart(ctx, {
         type: 'bar',
@@ -839,24 +825,21 @@
               ticks: { stepSize: 1 },
               grid: { color: 'rgba(0,0,0,0.05)' }
             },
-            x: {
-              grid: { display: false }
-            }
+            x: { grid: { display: false } }
           },
           animation: { duration: 500 }
         }
       });
     }
 
-    // Ferma presentazione
+    // Stop presentazione
     stopPresentationBtn.addEventListener('click', async () => {
-      if (!confirm('Vuoi davvero fermare la presentazione?')) return;
+      if (!confirm('Fermare la presentazione?')) return;
       
       try {
         if (livePresentationId) {
           await updateDoc(doc(db, "presentations", livePresentationId), { status: 'finished' });
         }
-        
         await setDoc(doc(db, "status", "livePresentation"), { activeId: null, currentSlide: -1 });
 
         livePresentationData = null;
@@ -865,7 +848,6 @@
         uniquePlayers.clear();
         
         updatePresenterUI();
-        
         if (currentResponsesUnsub) currentResponsesUnsub();
         if (currentChart) {
           currentChart.data.labels = [];
@@ -874,44 +856,17 @@
         }
         
         await loadPresentations();
-        showToast('Presentazione terminata con successo', 'success');
+        showToast('Presentazione fermata', 'success');
       } catch (err) {
-        console.error("Errore durante lo stop:", err);
-        showToast('Errore nel fermare la presentazione', 'error');
+        console.error(err);
+        showToast('Errore stop', 'error');
       }
     });
 
-    // Navigazione slide
+    // Navigazione
     prevSlideBtn.addEventListener('click', () => {
-      if (liveSlideIndex > 0) {
-        goToSlide(liveSlideIndex - 1);
-      }
+      if (liveSlideIndex > 0) goToSlide(liveSlideIndex - 1);
     });
 
     nextSlideBtn.addEventListener('click', () => {
-      if (livePresentationData && liveSlideIndex < livePresentationData.slides.length - 1) {
-        goToSlide(liveSlideIndex + 1);
-      }
-    });
-
-    // Shortcuts tastiera
-    document.addEventListener('keydown', (e) => {
-      if (!livePresentationData) return;
-      
-      if (e.key === 'ArrowLeft' && !prevSlideBtn.disabled) {
-        e.preventDefault();
-        prevSlideBtn.click();
-      } else if (e.key === 'ArrowRight' && !nextSlideBtn.disabled) {
-        e.preventDefault();
-        nextSlideBtn.click();
-      } else if (e.key === 'Escape' && !stopPresentationBtn.disabled) {
-        e.preventDefault();
-        stopPresentationBtn.click();
-      }
-    });
-
-    // Inizializza chart vuoto
-    updateChart([], []);
-    </script> 
-</body>
-</html>
+      if (livePresentationData && liveSlideIndex
