@@ -869,4 +869,29 @@
     });
 
     nextSlideBtn.addEventListener('click', () => {
-      if (livePresentationData && liveSlideIndex
+      if (livePresentationData && liveSlideIndex < livePresentationData.slides.length - 1) {
+        goToSlide(liveSlideIndex + 1);
+      }
+    });
+
+    // Shortcuts tastiera
+    document.addEventListener('keydown', (e) => {
+      if (!livePresentationData) return;
+      
+      if (e.key === 'ArrowLeft' && !prevSlideBtn.disabled) {
+        e.preventDefault();
+        prevSlideBtn.click();
+      } else if (e.key === 'ArrowRight' && !nextSlideBtn.disabled) {
+        e.preventDefault();
+        nextSlideBtn.click();
+      } else if (e.key === 'Escape' && !stopPresentationBtn.disabled) {
+        e.preventDefault();
+        stopPresentationBtn.click();
+      }
+    });
+
+    // Inizializza chart vuoto
+    updateChart([], []);
+  </script>
+</body>
+</html>
