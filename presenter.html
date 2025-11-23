@@ -462,7 +462,8 @@
       }
     }
   </style>
-  <script src="js/theme.js" defer></script>
+  <!-- Assicurati che js/theme.js esista o rimuovi questa riga se non lo usi -->
+  <script src="js/theme.js" defer></script> 
 </head>
 <body>
   
@@ -568,6 +569,7 @@
     import { getFirestore, doc, setDoc, collection, onSnapshot, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
     import { Chart } from "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js";
 
+    // ** La tua configurazione Firebase fornita in precedenza **
     const firebaseConfig = {
       apiKey: "AIzaSyCjBRJritJMO_yQu5JzO7yHTkcRyMIn51w",
       authDomain: "eldaquiz-cfc72.firebaseapp.com",
@@ -590,7 +592,7 @@
     let liveSlideIndex = -1;
     let uniquePlayers = new Set();
 
-    // UI
+    // UI Elements
     const pinDisplay = document.getElementById('pinDisplay');
     const liveTitle = document.getElementById('liveTitle');
     const liveQuestion = document.getElementById('liveQuestion');
@@ -604,49 +606,52 @@
     const logoutBtn = document.getElementById('logoutBtn');
     const refreshBtn = document.getElementById('refreshBtn');
 
-    // Autenticazione
+    // --- Autenticazione ---
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        window.location.href = 'login.html';
+        // Se l'utente non è autenticato, reindirizza alla pagina di login
+        window.location.href = 'login.html'; 
       } else {
+        // Se autenticato, carica le presentazioni
         loadPresentations();
       }
     });
 
-    // Logout
+    // --- Logout ---
     logoutBtn.addEventListener('click', async () => {
       try {
         await signOut(auth);
         showToast('Logout effettuato', 'success');
         setTimeout(() => window.location.href = 'login.html', 1000);
       } catch (err) {
-        console.error(err);
-        showToast('Errore logout', 'error');
+        console.error("Errore durante il logout:", err);
+        showToast('Errore durante il logout', 'error');
       }
     });
 
-    // Refresh
+    // --- Refresh delle Presentazioni ---
     refreshBtn.addEventListener('click', () => {
-      refreshBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Aggiorna';
+      refreshBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Aggiorna'; // Animazione
       loadPresentations();
       setTimeout(() => {
-        refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Aggiorna';
+        refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Aggiorna'; // Ripristina icona
       }, 1000);
     });
 
-    // Toast
+    // --- Funzione Toast per Notifiche ---
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
       const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
       toast.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
       document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
+      setTimeout(() => toast.remove(), 3000); // Rimuovi il toast dopo 3 secondi
     }
 
-    // Aggiorna UI
+    // --- Aggiorna Interfaccia Utente del Presentatore ---
     function updatePresenterUI() {
       if (!livePresentationData) {
+        // Stato iniziale o quando nessuna presentazione è live
         pinDisplay.textContent = '——————';
         liveTitle.textContent = '—';
         liveQuestion.textContent = '—';
@@ -657,6 +662,7 @@
         nextSlideBtn.disabled = true;
         stopPresentationBtn.disabled = true;
       } else {
+        // Quando una presentazione è live
         pinDisplay.textContent = livePresentationData.pin || '......';
         liveTitle.textContent = livePresentationData.title;
         stopPresentationBtn.disabled = false;
@@ -667,11 +673,17 @@
           slideCounter.textContent = `Slide ${liveSlideIndex + 1} / ${livePresentationData.slides.length}`;
           prevSlideBtn.disabled = (liveSlideIndex === 0);
           nextSlideBtn.disabled = (liveSlideIndex === livePresentationData.slides.length - 1);
+        } else {
+          // Se per qualche motivo la slide corrente non è valida
+          liveQuestion.textContent = '—';
+          slideCounter.textContent = '— / —';
+          prevSlideBtn.disabled = true;
+          nextSlideBtn.disabled = true;
         }
       }
     }
 
-    // Carica presentazioni
+    // --- Carica Tutte le Presentazioni da Firestore ---
     async function loadPresentations() {
       presentationListEl.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Caricamento...</p></div>';
       
@@ -689,6 +701,7 @@
           return;
         }
         
+        // Renderizza la lista delle presentazioni
         presentationListEl.innerHTML = allPresentations.map(p => `
           <div class="presentation-item">
             <div class="presentation-info">
@@ -707,13 +720,13 @@
           </div>
         `).join('');
       } catch (err) {
-        console.error(err);
-        presentationListEl.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p style="color: var(--danger);">Errore</p></div>';
-        showToast('Errore caricamento', 'error');
+        console.error("Errore caricamento presentazioni:", err);
+        presentationListEl.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p style="color: var(--danger);">Errore durante il caricamento delle presentazioni.</p></div>';
+        showToast('Errore caricamento presentazioni', 'error');
       }
     }
 
-    // Lancia presentazione
+    // --- Avvia una Presentazione (imposta lo stato "live") ---
     window.launchPresentation = async function(id) {
       try {
         livePresentationData = allPresentations.find(p => p.id === id);
@@ -723,78 +736,98 @@
         }
         
         if (!livePresentationData.slides || livePresentationData.slides.length === 0) {
-          showToast('Nessuna slide', 'warning');
+          showToast('La presentazione selezionata non contiene slide.', 'warning');
           return;
         }
         
         livePresentationId = id;
-        const pin = (Math.floor(Math.random() * 900000) + 100000).toString();
-        livePresentationData.pin = pin;
-        
+        const pin = (Math.floor(Math.random() * 900000) + 100000).toString(); // Genera PIN di 6 cifre
+        livePresentationData.pin = pin; // Aggiorna il dato locale
+
+        // Aggiorna lo stato della presentazione in Firestore a 'live' e assegna il PIN
         await updateDoc(doc(db, "presentations", id), { status: 'live', pin: pin });
+        
+        // Passa alla prima slide
         await goToSlide(0);
-        await loadPresentations();
+
+        // Ricarica la lista per aggiornare lo stato "LIVE" visibile
+        await loadPresentations(); 
         showToast('Presentazione avviata!', 'success');
       } catch (err) {
-        console.error(err);
-        showToast('Errore avvio', 'error');
+        console.error("Errore avvio presentazione:", err);
+        showToast('Errore durante l\'avvio della presentazione', 'error');
         livePresentationData = null;
         livePresentationId = null;
       }
     };
 
-    // Naviga slide
+    // --- Naviga tra le Slide della Presentazione Live ---
     async function goToSlide(index) {
       try {
-        if (!livePresentationData?.slides) return;
-        if (index < 0 || index >= livePresentationData.slides.length) return;
+        if (!livePresentationData?.slides) {
+          showToast('Nessuna presentazione live o slide disponibili.', 'warning');
+          return;
+        }
+        if (index < 0 || index >= livePresentationData.slides.length) {
+          showToast('Indice slide non valido.', 'warning');
+          return;
+        }
         
         liveSlideIndex = index;
+
+        // Aggiorna lo stato della presentazione live in un documento separato "status/livePresentation"
         await setDoc(doc(db, "status", "livePresentation"), { 
           activeId: livePresentationId, 
           currentSlide: liveSlideIndex 
         });
 
-        updatePresenterUI();
+        updatePresenterUI(); // Aggiorna l'interfaccia del presentatore
         const slideData = livePresentationData.slides[liveSlideIndex];
+        // Avvia il listener delle risposte per la slide corrente
         startResponsesListener(livePresentationId, liveSlideIndex, slideData.answers);
       } catch (err) {
-        console.error(err);
-        showToast('Errore cambio slide', 'error');
+        console.error("Errore cambio slide:", err);
+        showToast('Errore durante il cambio di slide', 'error');
       }
     }
 
-    // Listener risposte
+    // --- Ascolta le Risposte in Tempo Reale per la Slide Corrente ---
     function startResponsesListener(presentationId, slideIndex, answers) {
-      if (currentResponsesUnsub) currentResponsesUnsub();
-      uniquePlayers.clear();
+      // Se c'è già un listener attivo, lo disattiva per evitarne multipli
+      if (currentResponsesUnsub) currentResponsesUnsub(); 
+      uniquePlayers.clear(); // Resetta i giocatori unici per la nuova slide
       
+      // onSnapshot crea un listener in tempo reale
       currentResponsesUnsub = onSnapshot(
-        collection(db, 'presentations', presentationId, 'responses'),
+        collection(db, 'presentations', presentationId, 'responses'), // Ascolta la sottocollezione 'responses'
         (snapshot) => {
-          const responses = snapshot.docs.map(d => d.data());
-          const slideResponses = responses.filter(r => r.slide === slideIndex);
+          const responses = snapshot.docs.map(d => d.data()); // Ottieni i dati delle risposte
+          const slideResponses = responses.filter(r => r.slide === slideIndex); // Filtra per la slide corrente
           
-          const counts = new Array(answers.length).fill(0);
+          const counts = new Array(answers.length).fill(0); // Inizializza i contatori per le risposte
           slideResponses.forEach(r => {
             if (typeof r.answer === 'number' && counts[r.answer] !== undefined) {
-              counts[r.answer]++;
+              counts[r.answer]++; // Incrementa il conteggio per l'opzione di risposta
             }
-            if (r.nick) uniquePlayers.add(r.nick);
+            if (r.nick) uniquePlayers.add(r.nick); // Aggiungi il nickname ai giocatori unici
           });
           
-          responseCount.textContent = slideResponses.length;
-          playerCount.textContent = uniquePlayers.size;
-          updateChart(answers, counts);
+          responseCount.textContent = slideResponses.length; // Aggiorna il conteggio risposte nella UI
+          playerCount.textContent = uniquePlayers.size;     // Aggiorna il conteggio giocatori nella UI
+          updateChart(answers, counts); // Aggiorna il grafico con i nuovi dati
+        },
+        (error) => {
+          console.error("Errore nel listener risposte:", error);
+          showToast('Errore caricamento risposte in tempo reale', 'error');
         }
       );
     }
 
-    // Chart
+    // --- Aggiorna il Grafico dei Risultati ---
     function updateChart(labels, data) {
       const ctx = document.getElementById('resultsChart');
       
-      if (currentChart) currentChart.destroy();
+      if (currentChart) currentChart.destroy(); // Distrugge il grafico precedente se esiste
       
       currentChart = new Chart(ctx, {
         type: 'bar',
@@ -803,7 +836,7 @@
           datasets: [{
             label: 'Risposte',
             data: data,
-            backgroundColor: ['#7c3aed', '#5b21b6', '#a855f7', '#d8b4fe'],
+            backgroundColor: ['#7c3aed', '#5b21b6', '#a855f7', '#d8b4fe'], // Colori per le barre
             borderRadius: 8,
             barThickness: 40
           }]
@@ -812,7 +845,7 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: false },
+            legend: { display: false }, // Nasconde la legenda
             tooltip: {
               backgroundColor: 'rgba(0,0,0,0.8)',
               padding: 12,
@@ -822,76 +855,67 @@
           scales: {
             y: {
               beginAtZero: true,
-              ticks: { stepSize: 1 },
+              ticks: { stepSize: 1 }, // Solo numeri interi sull'asse Y
               grid: { color: 'rgba(0,0,0,0.05)' }
             },
-            x: { grid: { display: false } }
+            x: { grid: { display: false } } // Nasconde la griglia sull'asse X
           },
-          animation: { duration: 500 }
+          animation: { duration: 500 } // Animazione per il cambio dati
         }
       });
     }
 
-    // Stop presentazione
+    // --- Ferma la Presentazione Corrente ---
     stopPresentationBtn.addEventListener('click', async () => {
-      if (!confirm('Fermare la presentazione?')) return;
+      if (!confirm('Sei sicuro di voler fermare la presentazione corrente? Questa azione terminerà la sessione live.')) return;
       
       try {
         if (livePresentationId) {
+          // Imposta lo stato della presentazione come 'finished'
           await updateDoc(doc(db, "presentations", livePresentationId), { status: 'finished' });
         }
+        // Resetta lo stato della presentazione live globale
         await setDoc(doc(db, "status", "livePresentation"), { activeId: null, currentSlide: -1 });
 
+        // Resetta tutti gli stati locali
         livePresentationData = null;
         livePresentationId = null;
         liveSlideIndex = -1;
         uniquePlayers.clear();
         
-        updatePresenterUI();
-        if (currentResponsesUnsub) currentResponsesUnsub();
-        if (currentChart) {
+        updatePresenterUI(); // Aggiorna l'UI allo stato iniziale
+        if (currentResponsesUnsub) currentResponsesUnsub(); // Disattiva il listener delle risposte
+        if (currentChart) { // Resetta o distrugge il grafico
           currentChart.data.labels = [];
           currentChart.data.datasets[0].data = [];
           currentChart.update();
         }
         
-        await loadPresentations();
-        showToast('Presentazione fermata', 'success');
+        await loadPresentations(); // Ricarica la lista delle presentazioni
+        showToast('Presentazione fermata con successo.', 'success');
       } catch (err) {
-        console.error(err);
-        showToast('Errore stop', 'error');
+        console.error("Errore stop presentazione:", err);
+        showToast('Errore durante l\'arresto della presentazione', 'error');
       }
     });
 
-    // Navigazione
+    // --- Navigazione Slide (Indietro) ---
     prevSlideBtn.addEventListener('click', () => {
-      if (liveSlideIndex > 0) goToSlide(liveSlideIndex - 1);
+      if (liveSlideIndex > 0) {
+        goToSlide(liveSlideIndex - 1);
+      } else {
+        showToast('Sei già alla prima slide.', 'warning');
+      }
     });
 
+    // --- Navigazione Slide (Avanti) ---
     nextSlideBtn.addEventListener('click', () => {
       if (livePresentationData && liveSlideIndex < livePresentationData.slides.length - 1) {
         goToSlide(liveSlideIndex + 1);
+      } else {
+        showToast('Sei già all\'ultima slide.', 'warning');
       }
     });
-
-    // Shortcuts tastiera
-    document.addEventListener('keydown', (e) => {
-      if (!livePresentationData) return;
-      
-      if (e.key === 'ArrowLeft' && !prevSlideBtn.disabled) {
-        e.preventDefault();
-        prevSlideBtn.click();
-      } else if (e.key === 'ArrowRight' && !nextSlideBtn.disabled) {
-        e.preventDefault();
-        nextSlideBtn.click();
-      } else if (e.key === 'Escape' && !stopPresentationBtn.disabled) {
-        e.preventDefault();
-        stopPresentationBtn.click();
-      }
-    });
-
-    // Inizializza chart vuoto
-    updateChart([], []);
   </script>
 </body>
 </html>
