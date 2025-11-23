@@ -139,6 +139,10 @@
       background: var(--danger);
     }
 
+    .btn-warning {
+      background: var(--warning);
+    }
+
     .btn-sm {
       padding: 0.5rem 1rem;
       font-size: 0.85rem;
@@ -434,14 +438,170 @@
 
     .hidden { display: none !important; }
 
+    /* === FULLSCREEN PRESENTATION MODE === */
+    #fullscreenPresentation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #1e1b4b, #4c1d95, #7c3aed);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      color: white;
+    }
+
+    .fs-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 3rem;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    .fs-pin-qr {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .fs-pin-box {
+      text-align: center;
+    }
+
+    .fs-pin-label {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin-bottom: 0.5rem;
+    }
+
+    .fs-pin-value {
+      font-size: 5rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .fs-qr-box {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    #fsQrCode {
+      width: 180px;
+      height: 180px;
+    }
+
+    .fs-url {
+      text-align: center;
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .fs-controls {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .fs-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      overflow-y: auto;
+    }
+
+    .fs-question {
+      font-size: 4rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 3rem;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      line-height: 1.3;
+      max-width: 90%;
+    }
+
+    .fs-answers {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+
+    .fs-answer {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      font-size: 2rem;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s ease;
+      min-height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fs-answer:nth-child(1) { border-color: #ef4444; }
+    .fs-answer:nth-child(2) { border-color: #3b82f6; }
+    .fs-answer:nth-child(3) { border-color: #fbbf24; }
+    .fs-answer:nth-child(4) { border-color: #10b981; }
+
+    .fs-footer {
+      padding: 2rem 3rem;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .fs-stats {
+      display: flex;
+      gap: 3rem;
+    }
+
+    .fs-stat {
+      text-align: center;
+    }
+
+    .fs-stat-value {
+      font-size: 3rem;
+      font-weight: 800;
+      display: block;
+    }
+
+    .fs-stat-label {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-top: 0.3rem;
+    }
+
+    .fs-navigation {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .fs-slide-counter {
+      font-size: 1.5rem;
+      font-weight: 600;
+      padding: 0 2rem;
+    }
+
     @media (max-width: 768px) {
       .container {
         padding: 1rem;
-      }
-
-      header {
-        flex-direction: column;
-        text-align: center;
       }
 
       .presenter-grid {
@@ -451,9 +611,56 @@
       .control-panel {
         position: static;
       }
+
+      .fs-header {
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1.5rem;
+      }
+
+      .fs-pin-qr {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .fs-pin-value {
+        font-size: 3rem;
+      }
+
+      #fsQrCode {
+        width: 150px;
+        height: 150px;
+      }
+
+      .fs-question {
+        font-size: 2.5rem;
+      }
+
+      .fs-answers {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .fs-answer {
+        font-size: 1.5rem;
+        padding: 2rem 1.5rem;
+        min-height: 100px;
+      }
+
+      .fs-footer {
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      .fs-stats {
+        gap: 2rem;
+      }
+
+      .fs-stat-value {
+        font-size: 2rem;
+      }
     }
   </style>
-  <script src="js/theme.js" defer></script>
 </head>
 <body>
   
@@ -523,6 +730,10 @@
             </div>
           </div>
 
+          <button class="btn btn-warning" id="presentationModeBtn" disabled style="width: 100%; margin-bottom: 1rem;">
+            <i class="fas fa-tv"></i> Modalità Presentazione
+          </button>
+
           <div class="slide-navigation">
             <div class="slide-counter" id="slideCounter">— / —</div>
             <button class="btn btn-secondary" id="prevSlideBtn" disabled>
@@ -545,7 +756,60 @@
     </div>
   </div>
 
-  <!-- Carica Chart.js come script globale (non come modulo ES6) -->
+  <!-- Fullscreen Presentation Mode -->
+  <div id="fullscreenPresentation" class="hidden">
+    <div class="fs-header">
+      <div class="fs-pin-qr">
+        <div class="fs-pin-box">
+          <div class="fs-pin-label">PIN</div>
+          <div class="fs-pin-value" id="fsPinValue">——————</div>
+        </div>
+        <div>
+          <div class="fs-qr-box">
+            <div id="fsQrCode"></div>
+          </div>
+          <div class="fs-url" id="fsUrlDisplay">...</div>
+        </div>
+      </div>
+      <div class="fs-controls">
+        <button class="btn btn-danger" id="exitFullscreenBtn">
+          <i class="fas fa-times"></i> Esci
+        </button>
+      </div>
+    </div>
+
+    <div class="fs-main">
+      <div class="fs-question" id="fsQuestion">...</div>
+      <div class="fs-answers" id="fsAnswers"></div>
+    </div>
+
+    <div class="fs-footer">
+      <div class="fs-stats">
+        <div class="fs-stat">
+          <span class="fs-stat-value" id="fsResponseCount">0</span>
+          <span class="fs-stat-label">Risposte</span>
+        </div>
+        <div class="fs-stat">
+          <span class="fs-stat-value" id="fsPlayerCount">0</span>
+          <span class="fs-stat-label">Giocatori</span>
+        </div>
+      </div>
+      <div class="fs-navigation">
+        <button class="btn btn-secondary" id="fsPrevBtn">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="fs-slide-counter" id="fsSlideCounter">— / —</div>
+        <button class="btn btn-primary" id="fsNextBtn">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QRCode Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
   <script type="module">
@@ -553,8 +817,8 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, collection, onSnapshot, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    // Accesso a Chart dalla variabile globale
     const Chart = window.Chart;
+    const QRCode = window.QRCode;
 
     const firebaseConfig = {
       apiKey: "AIzaSyCjBRJritJMO_yQu5JzO7yHTkcRyMIn51w",
@@ -576,6 +840,7 @@
     let livePresentationId = null;
     let liveSlideIndex = -1;
     let uniquePlayers = new Set();
+    let qrCodeInstance = null;
 
     const pinDisplay = document.getElementById('pinDisplay');
     const liveTitle = document.getElementById('liveTitle');
@@ -589,6 +854,19 @@
     const presentationListEl = document.getElementById('presentationList');
     const logoutBtn = document.getElementById('logoutBtn');
     const refreshBtn = document.getElementById('refreshBtn');
+    const presentationModeBtn = document.getElementById('presentationModeBtn');
+
+    const fullscreenDiv = document.getElementById('fullscreenPresentation');
+    const fsPinValue = document.getElementById('fsPinValue');
+    const fsUrlDisplay = document.getElementById('fsUrlDisplay');
+    const fsQuestion = document.getElementById('fsQuestion');
+    const fsAnswers = document.getElementById('fsAnswers');
+    const fsResponseCount = document.getElementById('fsResponseCount');
+    const fsPlayerCount = document.getElementById('fsPlayerCount');
+    const fsSlideCounter = document.getElementById('fsSlideCounter');
+    const fsPrevBtn = document.getElementById('fsPrevBtn');
+    const fsNextBtn = document.getElementById('fsNextBtn');
+    const exitFullscreenBtn = document.getElementById('exitFullscreenBtn');
 
     onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -637,10 +915,12 @@
         prevSlideBtn.disabled = true;
         nextSlideBtn.disabled = true;
         stopPresentationBtn.disabled = true;
+        presentationModeBtn.disabled = true;
       } else {
         pinDisplay.textContent = livePresentationData.pin || '......';
         liveTitle.textContent = livePresentationData.title;
         stopPresentationBtn.disabled = false;
+        presentationModeBtn.disabled = false;
 
         const slideData = livePresentationData.slides[liveSlideIndex];
         if (slideData) {
@@ -736,6 +1016,7 @@
         });
 
         updatePresenterUI(); 
+        updateFullscreenUI();
         const slideData = livePresentationData.slides[liveSlideIndex];
         startResponsesListener(livePresentationId, liveSlideIndex, slideData.answers);
       } catch (err) {
@@ -763,7 +1044,9 @@
           });
           
           responseCount.textContent = slideResponses.length; 
-          playerCount.textContent = uniquePlayers.size;     
+          playerCount.textContent = uniquePlayers.size;
+          fsResponseCount.textContent = slideResponses.length;
+          fsPlayerCount.textContent = uniquePlayers.size;
           updateChart(answers, counts); 
         }
       );
@@ -853,6 +1136,99 @@
         goToSlide(liveSlideIndex + 1);
       } else {
         showToast('Ultima slide.', 'warning');
+      }
+    });
+
+    // === FULLSCREEN PRESENTATION MODE ===
+    presentationModeBtn.addEventListener('click', () => {
+      if (livePresentationData && livePresentationData.pin) {
+        enterFullscreenMode();
+      }
+    });
+
+    exitFullscreenBtn.addEventListener('click', () => {
+      exitFullscreenMode();
+    });
+
+    fsPrevBtn.addEventListener('click', () => {
+      if (liveSlideIndex > 0) {
+        goToSlide(liveSlideIndex - 1);
+      }
+    });
+
+    fsNextBtn.addEventListener('click', () => {
+      if (livePresentationData && liveSlideIndex < livePresentationData.slides.length - 1) {
+        goToSlide(liveSlideIndex + 1);
+      }
+    });
+
+    function enterFullscreenMode() {
+      fullscreenDiv.classList.remove('hidden');
+      
+      // Genera QR Code
+      const joinUrl = `${window.location.origin}/join.html?join=${livePresentationData.pin}`;
+      const qrContainer = document.getElementById('fsQrCode');
+      qrContainer.innerHTML = '';
+      
+      qrCodeInstance = new QRCode(qrContainer, {
+        text: joinUrl,
+        width: 180,
+        height: 180,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      
+      fsUrlDisplay.textContent = joinUrl;
+      updateFullscreenUI();
+      
+      // Tenta fullscreen nativo
+      if (fullscreenDiv.requestFullscreen) {
+        fullscreenDiv.requestFullscreen().catch(err => {
+          console.log('Fullscreen non supportato:', err);
+        });
+      }
+    }
+
+    function exitFullscreenMode() {
+      fullscreenDiv.classList.add('hidden');
+      
+      // Esci da fullscreen nativo
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
+    }
+
+    function updateFullscreenUI() {
+      if (!livePresentationData) return;
+      
+      fsPinValue.textContent = livePresentationData.pin || '——————';
+      
+      const slideData = livePresentationData.slides[liveSlideIndex];
+      if (slideData) {
+        fsQuestion.textContent = slideData.question;
+        fsSlideCounter.textContent = `${liveSlideIndex + 1} / ${livePresentationData.slides.length}`;
+        
+        // Mostra le risposte
+        fsAnswers.innerHTML = slideData.answers.map(ans => `
+          <div class="fs-answer">${ans}</div>
+        `).join('');
+        
+        fsPrevBtn.disabled = (liveSlideIndex === 0);
+        fsNextBtn.disabled = (liveSlideIndex === livePresentationData.slides.length - 1);
+      }
+    }
+
+    // Keyboard shortcuts per fullscreen
+    document.addEventListener('keydown', (e) => {
+      if (!fullscreenDiv.classList.contains('hidden')) {
+        if (e.key === 'Escape') {
+          exitFullscreenMode();
+        } else if (e.key === 'ArrowLeft' && liveSlideIndex > 0) {
+          goToSlide(liveSlideIndex - 1);
+        } else if (e.key === 'ArrowRight' && liveSlideIndex < livePresentationData.slides.length - 1) {
+          goToSlide(liveSlideIndex + 1);
+        }
       }
     });
   </script>
