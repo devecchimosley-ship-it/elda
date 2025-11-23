@@ -55,7 +55,6 @@
       padding: 2rem;
     }
 
-    /* Header */
     header {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
@@ -88,7 +87,6 @@
       align-items: center;
     }
 
-    /* Pulsanti */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -146,7 +144,6 @@
       font-size: 0.85rem;
     }
 
-    /* Grid Layout */
     .presenter-grid {
       display: grid;
       grid-template-columns: 1fr 480px;
@@ -160,7 +157,6 @@
       }
     }
 
-    /* Card */
     .card {
       background: var(--bg-card);
       backdrop-filter: blur(16px);
@@ -184,7 +180,6 @@
       color: #c7b3ff;
     }
 
-    /* Lista presentazioni */
     .presentations-list {
       display: flex;
       flex-direction: column;
@@ -260,7 +255,6 @@
       50% { opacity: 0.6; }
     }
 
-    /* Control Panel */
     .control-panel {
       position: sticky;
       top: 1rem;
@@ -347,7 +341,6 @@
       grid-column: 1 / -1;
     }
 
-    /* Chart */
     .chart-container {
       background: rgba(0,0,0,0.03);
       padding: 1rem;
@@ -395,7 +388,6 @@
       margin-top: 0.3rem;
     }
 
-    /* Stati vuoti */
     .empty-state {
       text-align: center;
       padding: 3rem 1rem;
@@ -409,7 +401,6 @@
       display: block;
     }
 
-    /* Toast */
     .toast {
       position: fixed;
       bottom: 2rem;
@@ -462,8 +453,7 @@
       }
     }
   </style>
-  <!-- Assicurati che js/theme.js esista o rimuovi questa riga se non lo usi -->
-  <script src="js/theme.js" defer></script> 
+  <script src="js/theme.js" defer></script>
 </head>
 <body>
   
@@ -484,7 +474,6 @@
     </header>
 
     <div class="presenter-grid">
-      <!-- Lista presentazioni -->
       <div>
         <div class="card">
           <h3>
@@ -500,7 +489,6 @@
         </div>
       </div>
 
-      <!-- Pannello di controllo -->
       <aside class="control-panel">
         <div class="card">
           <h3>
@@ -508,13 +496,11 @@
             Controllo Live
           </h3>
 
-          <!-- PIN -->
           <div class="pin-section">
             <div class="pin-label">PIN di accesso per i giocatori</div>
             <div class="pin-display" id="pinDisplay">——————</div>
           </div>
 
-          <!-- Preview -->
           <div class="presentation-preview">
             <div class="preview-row">
               <span class="preview-label">Presentazione:</span>
@@ -526,7 +512,6 @@
             </div>
           </div>
 
-          <!-- Statistiche -->
           <div class="stats-grid">
             <div class="stat-card">
               <span class="stat-value" id="responseCount">0</span>
@@ -538,7 +523,6 @@
             </div>
           </div>
 
-          <!-- Navigazione -->
           <div class="slide-navigation">
             <div class="slide-counter" id="slideCounter">— / —</div>
             <button class="btn btn-secondary" id="prevSlideBtn" disabled>
@@ -549,12 +533,10 @@
             </button>
           </div>
 
-          <!-- Chart -->
           <div class="chart-container">
             <canvas id="resultsChart"></canvas>
           </div>
 
-          <!-- Azioni -->
           <button class="btn btn-danger" id="stopPresentationBtn" disabled style="width: 100%;">
             <i class="fas fa-stop-circle"></i> Ferma Presentazione
           </button>
@@ -563,13 +545,17 @@
     </div>
   </div>
 
+  <!-- Carica Chart.js come script globale (non come modulo ES6) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, collection, onSnapshot, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-    import Chart from "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"; // Correzione dell'import di Chart.js
 
-    // ** La tua configurazione Firebase fornita in precedenza **
+    // Accesso a Chart dalla variabile globale
+    const Chart = window.Chart;
+
     const firebaseConfig = {
       apiKey: "AIzaSyCjBRJritJMO_yQu5JzO7yHTkcRyMIn51w",
       authDomain: "eldaquiz-cfc72.firebaseapp.com",
@@ -583,7 +569,6 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    // Stato
     let currentChart = null;
     let currentResponsesUnsub = null;
     let allPresentations = [];
@@ -592,7 +577,6 @@
     let liveSlideIndex = -1;
     let uniquePlayers = new Set();
 
-    // UI Elements
     const pinDisplay = document.getElementById('pinDisplay');
     const liveTitle = document.getElementById('liveTitle');
     const liveQuestion = document.getElementById('liveQuestion');
@@ -606,18 +590,14 @@
     const logoutBtn = document.getElementById('logoutBtn');
     const refreshBtn = document.getElementById('refreshBtn');
 
-    // --- Autenticazione ---
     onAuthStateChanged(auth, (user) => {
       if (!user) {
-        console.log("Utente non autenticato, reindirizzo a login.html");
         window.location.href = 'login.html'; 
       } else {
-        console.log("Utente autenticato:", user.uid);
         loadPresentations();
       }
     });
 
-    // --- Logout ---
     logoutBtn.addEventListener('click', async () => {
       try {
         await signOut(auth);
@@ -629,26 +609,23 @@
       }
     });
 
-    // --- Refresh delle Presentazioni ---
     refreshBtn.addEventListener('click', () => {
-      refreshBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Aggiorna'; // Animazione
+      refreshBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Aggiorna';
       loadPresentations();
       setTimeout(() => {
-        refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Aggiorna'; // Ripristina icona
+        refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Aggiorna';
       }, 1000);
     });
 
-    // --- Funzione Toast per Notifiche ---
     function showToast(message, type = 'success') {
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
       const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle';
       toast.innerHTML = `<i class="fas fa-${icon}"></i><span>${message}</span>`;
       document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000); // Rimuovi il toast dopo 3 secondi
+      setTimeout(() => toast.remove(), 3000);
     }
 
-    // --- Aggiorna Interfaccia Utente del Presentatore ---
     function updatePresenterUI() {
       if (!livePresentationData) {
         pinDisplay.textContent = '——————';
@@ -680,20 +657,14 @@
       }
     }
 
-    // --- Carica Tutte le Presentazioni da Firestore ---
     async function loadPresentations() {
       presentationListEl.innerHTML = '<div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Caricamento...</p></div>';
       
       try {
-        console.log("Tentativo di caricare le presentazioni dalla collezione 'presentations'...");
         const snapshot = await getDocs(collection(db, "presentations"));
-        console.log("Snapshot ricevuto da Firestore:", snapshot);
-        
         allPresentations = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-        console.log("Presentazioni parseggiate:", allPresentations);
 
         if (allPresentations.length === 0) {
-          console.log("Nessuna presentazione trovata.");
           presentationListEl.innerHTML = `
             <div class="empty-state">
               <i class="fas fa-folder-open"></i>
@@ -703,7 +674,6 @@
           return;
         }
         
-        console.log("Trovate presentazioni, rendering della lista...");
         presentationListEl.innerHTML = allPresentations.map(p => `
           <div class="presentation-item">
             <div class="presentation-info">
@@ -722,58 +692,44 @@
           </div>
         `).join('');
       } catch (err) {
-        console.error("Errore caricamento presentazioni Firestore:", err);
-        presentationListEl.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p style="color: var(--danger);">Errore durante il caricamento delle presentazioni.</p></div>';
+        console.error("Errore caricamento presentazioni:", err);
+        presentationListEl.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><p style="color: var(--danger);">Errore caricamento.</p></div>';
         showToast('Errore caricamento presentazioni', 'error');
       }
     }
 
-    // --- Avvia una Presentazione (imposta lo stato "live") ---
     window.launchPresentation = async function(id) {
       try {
         livePresentationData = allPresentations.find(p => p.id === id);
-        if (!livePresentationData) {
-          showToast('Presentazione non trovata', 'error');
-          return;
-        }
-        
-        if (!livePresentationData.slides || livePresentationData.slides.length === 0) {
-          showToast('La presentazione selezionata non contiene slide.', 'warning');
+        if (!livePresentationData || !livePresentationData.slides || livePresentationData.slides.length === 0) {
+          showToast('Presentazione non valida o senza slide.', 'warning');
           return;
         }
         
         livePresentationId = id;
-        const pin = (Math.floor(Math.random() * 900000) + 100000).toString(); // Genera PIN di 6 cifre
-        livePresentationData.pin = pin; // Aggiorna il dato locale
+        const pin = (Math.floor(Math.random() * 900000) + 100000).toString();
+        livePresentationData.pin = pin;
 
         await updateDoc(doc(db, "presentations", id), { status: 'live', pin: pin });
-        
         await goToSlide(0);
-
         await loadPresentations(); 
         showToast('Presentazione avviata!', 'success');
       } catch (err) {
         console.error("Errore avvio presentazione:", err);
-        showToast('Errore durante l\'avvio della presentazione', 'error');
+        showToast('Errore avvio presentazione', 'error');
         livePresentationData = null;
         livePresentationId = null;
       }
     };
 
-    // --- Naviga tra le Slide della Presentazione Live ---
     async function goToSlide(index) {
       try {
-        if (!livePresentationData?.slides) {
-          showToast('Nessuna presentazione live o slide disponibili.', 'warning');
-          return;
-        }
-        if (index < 0 || index >= livePresentationData.slides.length) {
-          showToast('Indice slide non valido.', 'warning');
+        if (!livePresentationData?.slides || index < 0 || index >= livePresentationData.slides.length) {
+          showToast('Slide non valida.', 'warning');
           return;
         }
         
         liveSlideIndex = index;
-
         await setDoc(doc(db, "status", "livePresentation"), { 
           activeId: livePresentationId, 
           currentSlide: liveSlideIndex 
@@ -784,11 +740,10 @@
         startResponsesListener(livePresentationId, liveSlideIndex, slideData.answers);
       } catch (err) {
         console.error("Errore cambio slide:", err);
-        showToast('Errore durante il cambio di slide', 'error');
+        showToast('Errore cambio slide', 'error');
       }
     }
 
-    // --- Ascolta le Risposte in Tempo Reale per la Slide Corrente ---
     function startResponsesListener(presentationId, slideIndex, answers) {
       if (currentResponsesUnsub) currentResponsesUnsub(); 
       uniquePlayers.clear(); 
@@ -810,15 +765,10 @@
           responseCount.textContent = slideResponses.length; 
           playerCount.textContent = uniquePlayers.size;     
           updateChart(answers, counts); 
-        },
-        (error) => {
-          console.error("Errore nel listener risposte:", error);
-          showToast('Errore caricamento risposte in tempo reale', 'error');
         }
       );
     }
 
-    // --- Aggiorna il Grafico dei Risultati ---
     function updateChart(labels, data) {
       const ctx = document.getElementById('resultsChart');
       
@@ -860,9 +810,8 @@
       });
     }
 
-    // --- Ferma la Presentazione Corrente ---
     stopPresentationBtn.addEventListener('click', async () => {
-      if (!confirm('Sei sicuro di voler fermare la presentazione corrente? Questa azione terminerà la sessione live.')) return;
+      if (!confirm('Sei sicuro di voler fermare la presentazione?')) return;
       
       try {
         if (livePresentationId) {
@@ -884,28 +833,26 @@
         }
         
         await loadPresentations(); 
-        showToast('Presentazione fermata con successo.', 'success');
+        showToast('Presentazione fermata.', 'success');
       } catch (err) {
-        console.error("Errore stop presentazione:", err);
-        showToast('Errore durante l\'arresto della presentazione', 'error');
+        console.error("Errore stop:", err);
+        showToast('Errore stop presentazione', 'error');
       }
     });
 
-    // --- Navigazione Slide (Indietro) ---
     prevSlideBtn.addEventListener('click', () => {
       if (liveSlideIndex > 0) {
         goToSlide(liveSlideIndex - 1);
       } else {
-        showToast('Sei già alla prima slide.', 'warning');
+        showToast('Prima slide.', 'warning');
       }
     });
 
-    // --- Navigazione Slide (Avanti) ---
     nextSlideBtn.addEventListener('click', () => {
       if (livePresentationData && liveSlideIndex < livePresentationData.slides.length - 1) {
         goToSlide(liveSlideIndex + 1);
       } else {
-        showToast('Sei già all\'ultima slide.', 'warning');
+        showToast('Ultima slide.', 'warning');
       }
     });
   </script>
