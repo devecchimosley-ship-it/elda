@@ -71,10 +71,14 @@ export async function logoutUser() {
 }
 
 // Ri-esportazioni per comodità (usate dagli altri moduli)
+// Dentro js/firebase.js
+// ... (tutto il codice di importazione e le funzioni)
+
+// Ri-esportazioni per comodità (usate dagli altri moduli)
 export {
-  doc,
+  doc,         // <-- Assicurati che sia qui
   onSnapshot,
-  getDoc,
+  getDoc,      // <-- Assicurati che sia qui
   setDoc,
   arrayUnion,
   collection,
