@@ -31,8 +31,9 @@
     </div>
   </div>
 
-  <script type="module">
-    import { adminLogin } from './js/firebase.js';
+ <script type="module">
+    // Importiamo le funzioni necessarie
+    import { adminLogin, db, doc, getDoc } from './js/firebase.js';
 
     const loginBtn = document.getElementById('loginBtn');
     const gotoPlayer = document.getElementById('gotoPlayer');
@@ -42,18 +43,29 @@
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value.trim();
       if (!email || !password) { msg.textContent = "Compila email e password."; return; }
-
-      // Blocca l'admin da questa pagina
-      if (email === 'admin@ems.it') {
-        msg.textContent = "Accesso admin non consentito. Usa il portale Admin.";
-        return;
-      }
       
       try {
-        // Firebase gestisce il login
-        await adminLogin(email, password); 
-        msg.textContent = "Accesso effettuato. Reindirizzamento...";
-        setTimeout(() => window.location.href = 'presenter.html', 700); // Invia al presenter
+        // --- Passaggio 1: Autenticazione ---
+        const userCredential = await adminLogin(email, password);
+        const user = userCredential.user;
+
+        msg.textContent = "Accesso verificato. Controllo autorizzazione...";
+
+        // --- Passaggio 2: Autorizzazione ---
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+
+        // Controlliamo se il ruolo è 'presenter' OPPURE 'admin'
+        // (Un admin potrebbe voler accedere anche qui)
+        if (userDoc.exists() && (userDoc.data().role === 'presenter' || userDoc.data().role === 'admin')) {
+          // SE il ruolo è 'presenter' (o 'admin') -> Accesso consentito
+          msg.textContent = "Accesso Presentatore effettuato. Reindirizzamento...";
+          setTimeout(() => window.location.href = 'presenter.html', 700);
+        } else {
+          // SE il ruolo non è valido
+          msg.textContent = "Accesso negato. Non sei un Presentatore autorizzato.";
+        }
+
       } catch (e) {
         console.error(e);
         msg.textContent = "Credenziali non valide.";
